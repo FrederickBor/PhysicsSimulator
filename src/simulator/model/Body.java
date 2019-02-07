@@ -11,7 +11,7 @@ public class Body {
 	private double mass;
 	
 	public Body() {
-		
+		//TODO
 	}
 
 	public Vector getVelocity() {
@@ -44,6 +44,15 @@ public class Body {
 
 	public double getMass() {
 		return mass;
+	}
+	
+	public void move(double t) {
+		//TODO
+	}
+	
+	public String toString() {
+		//TODO
+		return "";
 	}
 	
 	
