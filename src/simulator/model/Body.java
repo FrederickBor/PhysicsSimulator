@@ -4,55 +4,84 @@ import simulator.misc.Vector;
 
 public class Body {
 	
-	private String id;
-	private Vector velocity;
-	private Vector acceleration;
-	private Vector position;
-	private double mass;
+	protected String id;
+	protected Vector velocity;
+	protected Vector acceleration;
+	protected Vector position;
+	protected double mass;
 	
 	public Body() {
-		//TODO
+		this.id = "";
+		this.velocity = new Vector(0);
+		this.acceleration = new Vector(0);
+		this.position = new Vector(0);
+		this.mass = 0.0;
 	}
-
-	public Vector getVelocity() {
-		return velocity;
-	}
-
-	public void setVelocity(Vector velocity) {
-		this.velocity = velocity;
-	}
-
-	public Vector getAcceleration() {
-		return acceleration;
-	}
-
-	public void setAcceleration(Vector acceleration) {
-		this.acceleration = acceleration;
-	}
-
-	public Vector getPosition() {
-		return position;
-	}
-
-	public void setPosition(Vector position) {
-		this.position = position;
+	
+	public Body(String id, Vector vel, Vector acc, Vector pos, double mass) {
+		this.id = id;
+		this.velocity = vel;
+		this.acceleration = acc;
+		this.position = pos;
+		this.mass = mass;
 	}
 
 	public String getId() {
 		return id;
 	}
-
-	public double getMass() {
-		return mass;
+	
+	public Vector getVelocity() {
+		return  new Vector(this.velocity);
 	}
 	
-	public void move(double t) {
-		//TODO
+	public Vector getAcceleration() {
+		return new Vector(this.acceleration);
+	}
+
+	public Vector getPosition() {
+		return new Vector(this.position);
+	}
+
+	double getMass() {
+		return mass;
+	}
+
+	void setVelocity(Vector v) {
+		this.velocity = new Vector(v);
+	}
+
+	void setAcceleration(Vector a) {
+		this.acceleration = new Vector(a);
+	}
+	
+	void setPosition(Vector p) {
+		this.position = new Vector(p);
+	}
+	
+	void move(double t) {
+		Vector auxV = new Vector(this.velocity.scale(t));
+		Vector auxA = new Vector(this.acceleration.scale((t * t) / 2));
+		auxA.plus(auxV);
+		this.position = this.position.plus(auxA);
+		
+		this.velocity =  this.velocity.plus(new Vector(this.acceleration.scale(t)));
 	}
 	
 	public String toString() {
-		//TODO
-		return "";
+		StringBuilder sb = new StringBuilder();
+		sb.append("{ \"id: \" ");
+		sb.append(this.id);
+		sb.append(", \"mass: \" ");
+		sb.append(this.mass);
+		sb.append(", \"pos: \" ");
+		sb.append(this.position.toString());
+		sb.append(", \"vel: \" ");
+		sb.append(this.velocity.toString());
+		sb.append(", \"acc: \" ");
+		sb.append(this.acceleration.toString());
+		sb.append(" }");
+		
+		return sb.toString();
 	}
 	
 	

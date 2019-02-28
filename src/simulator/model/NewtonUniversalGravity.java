@@ -38,7 +38,8 @@ public class NewtonUniversalGravity implements GravityLaws {
 		for (Body j: bodies) {
 			//Calculamos el vector de la fuerza que aplica
 			// j sobre i
-			suma.plus(calculateFij(i,j,dim));
+			if (i != j )
+				suma.plus(calculateFij(i,j,dim));
 			
 		}
 		

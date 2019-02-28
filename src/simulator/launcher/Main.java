@@ -1,5 +1,11 @@
 package simulator.launcher;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * Examples of command-line parameters:
  * 
@@ -20,32 +26,58 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.json.JSONObject;
 
+import simulator.control.Controller;
+import simulator.factories.BasicBodyBuilder;
+import simulator.factories.Builder;
+import simulator.factories.BuilderBasedFactory;
 import simulator.factories.Factory;
+import simulator.factories.FallingToCenterGravityBuilder;
+import simulator.factories.MassLossingBodyBuilder;
+import simulator.factories.NewtonUniversalGravitationBuilder;
+import simulator.factories.NoGravityBuilder;
 import simulator.model.Body;
 import simulator.model.GravityLaws;
+import simulator.model.PhysicsSimulator;
 
 public class Main {
 
 	// default values for some parameters
-	//
 	private final static Double _dtimeDefaultValue = 2500.0;
 
 	// some attributes to stores values corresponding to command-line parameters
-	//
 	private static Double _dtime = null;
+	private static Integer _steps = null;
 	private static String _inFile = null;
+	private static String _outFile = null;
 	private static JSONObject _gravityLawsInfo = null;
 
 	// factories
 	private static Factory<Body> _bodyFactory;
 	private static Factory<GravityLaws> _gravityLawsFactory;
+	private static List<Builder<Body>> _bodies;
+	private static List<Builder<GravityLaws>> _gravities;
 
 	private static void init() {
 		// initialize the bodies factory
-		// ...
-
+		
+		List<Builder<Body>> bodies = new ArrayList<Builder<Body>>();
+		bodies.add(new BasicBodyBuilder());
+		bodies.add(new MassLossingBodyBuilder());
+		
+		_bodies = bodies;
+		
+		Main._bodyFactory = new BuilderBasedFactory<Body>(_bodies);
+		
 		// initialize the gravity laws factory
-		// ...
+		
+		List<Builder<GravityLaws>> gravities = new ArrayList<Builder<GravityLaws>>();
+		gravities.add(new FallingToCenterGravityBuilder());
+		gravities.add(new NewtonUniversalGravitationBuilder());
+		gravities.add(new NoGravityBuilder());
+		
+		_gravities = gravities;
+		
+		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities);
 	}
 
 	private static void parseArgs(String[] args) {
@@ -63,6 +95,8 @@ public class Main {
 			parseInFileOption(line);
 			parseDeltaTimeOption(line);
 			parseGravityLawsOption(line);
+			parseOutFileOption(line);
+			parseStepsOption(line);
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -134,6 +168,13 @@ public class Main {
 			throw new ParseException("An input file of bodies is required");
 		}
 	}
+	
+	private static void parseOutFileOption(CommandLine line) throws ParseException {
+		_outFile = line.getOptionValue("o");
+		if (_inFile == null) {
+			throw new ParseException("An output file is required");
+		}
+	}
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
 		String dt = line.getOptionValue("dt", _dtimeDefaultValue.toString());
@@ -144,7 +185,17 @@ public class Main {
 			throw new ParseException("Invalid delta-time value: " + dt);
 		}
 	}
-
+	
+	private static void parseStepsOption(CommandLine line) throws ParseException {
+		String s = line.getOptionValue("s", "1");
+		try {
+			_steps = Integer.parseInt(s);
+			assert (_steps > 0);
+		} catch (Exception e) {
+			throw new ParseException("Invalid steps value: " + s);
+		}
+	}
+	
 	private static void parseGravityLawsOption(CommandLine line) throws ParseException {
 
 		// this line is just a work around to make it work even when _gravityLawsFactory
@@ -170,6 +221,28 @@ public class Main {
 
 	private static void startBatchMode() throws Exception {
 		// create and connect components, then start the simulator
+		BuilderBasedFactory<GravityLaws> builder = new BuilderBasedFactory<GravityLaws>(_gravities);
+		GravityLaws gl = builder.createInstance(_gravityLawsInfo);
+		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
+		Controller controller = new Controller(ps, _bodyFactory);
+		
+		if(_outFile == null) {
+			for (int i=0; i<_steps; i++) {
+				controller.run(_dtime);
+			}
+		}
+		else {
+			File output = new File(_outFile);
+			try (OutputStream out = new FileOutputStream(output)){
+				for (int i=0; i<_steps; i++) {
+					controller.run(_dtime, out);
+				}
+			}
+			catch (Exception e) {
+				throw new ParseException("Error with output file: " + _outFile);
+			}
+		}
+		
 	}
 
 	private static void start(String[] args) throws Exception {
