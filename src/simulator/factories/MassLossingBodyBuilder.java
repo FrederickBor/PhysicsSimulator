@@ -50,5 +50,28 @@ public class MassLossingBodyBuilder extends Builder<Body> {
 		//Creamos el nuevo cuerpo
 		return new MassLossingBody(id, vel, acc, pos, mass, lFactor, lFrequ);
 	}
+	
+	public JSONObject getBuilderInfo() {
+		JSONObject jsonObject = super.getBuilderInfo();
+		JSONObject data = new JSONObject();
+		
+		data.append("id", "b1");
+		JSONArray pos = new JSONArray();
+		pos.put(-3.5e10);
+		pos.put(0.0e00);
+		data.append("pos", pos);
+		JSONArray vel = new JSONArray();
+		vel.put(0.0e00);
+		vel.put(1.4e03);
+		data.append("vel", vel);
+		data.append("mass", 3.0e28);
+		data.append("freq", 1e3);
+		data.append("factor", 1e-3);
+		
+		
+		jsonObject.put("data", data);
+		
+		return jsonObject;
+	}
 
 }

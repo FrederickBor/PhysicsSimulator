@@ -44,5 +44,26 @@ public class BasicBodyBuilder extends Builder<Body> {
 		//Creamos el nuevo cuerpo
 		return new Body(id, vel, acc, pos, mass);
 	}
+	
+	public JSONObject getBuilderInfo() {
+		JSONObject jsonObject = super.getBuilderInfo();
+		JSONObject data = new JSONObject();
+		
+		data.append("id", "b1");
+		JSONArray pos = new JSONArray();
+		pos.put(0.0e00);
+		pos.put(0.0e00);
+		data.append("pos", pos);
+		JSONArray vel = new JSONArray();
+		vel.put(0.5e04);
+		vel.put(0.0e00);
+		data.append("vel", vel);
+		data.append("mass", 5.97e24);
+		
+		
+		jsonObject.put("data", data);
+		
+		return jsonObject;
+	}
 
 }

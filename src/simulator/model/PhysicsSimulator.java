@@ -1,5 +1,6 @@
 package simulator.model;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class PhysicsSimulator {
@@ -8,7 +9,10 @@ public class PhysicsSimulator {
 	private double timeLapsed;
 	private List<Body> bodies;
 	
-	public PhysicsSimulator(GravityLaws gl, double dt){
+	public PhysicsSimulator(GravityLaws gl, double dt) throws IllegalArgumentException{
+		
+		if (gl == null) throw new IllegalArgumentException();
+		
 		this.dt = dt;
 		this.gl = gl;
 		timeLapsed = 0;
@@ -21,21 +25,28 @@ public class PhysicsSimulator {
 	public void advance() {
 		gl.apply(bodies);
 		for (Body body : bodies) {
-			body.move(timeLapsed);
+			body.move(dt);
 		}
-		
-		//TENGO DUDAS CON ESTO
-		if(timeLapsed >= dt ) {
-			timeLapsed = 0;
-		}
-		else {
-			timeLapsed ++;
-		}
+		timeLapsed += dt;
 	}
 	
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		//s.append("HOLA")
+		
+		s.append("{ \"time\": " + timeLapsed + ",");
+		s.append("\"bodies\":[");
+		
+		Iterator<Body> iterator = bodies.iterator();
+		
+		while(iterator.hasNext()) {
+			s.append(iterator.next().toString());
+			
+			if(iterator.hasNext()) 
+				s.append(",");
+		}
+		
+		s.append("] }");
+		
 		return s.toString();
 	}
 }

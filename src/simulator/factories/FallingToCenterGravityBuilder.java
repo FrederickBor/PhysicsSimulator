@@ -15,8 +15,14 @@ public class FallingToCenterGravityBuilder extends Builder<GravityLaws> {
 	
 	@Override
 	protected GravityLaws createTheInstance(JSONObject object) {
-		// TODO Auto-generated method stub
 		return new FallingToCenterGravity();
+	}
+	
+	public JSONObject getBuilderInfo() {
+		JSONObject jsonObject = super.getBuilderInfo();
+		jsonObject.put("data", new JSONObject());
+		
+		return jsonObject;
 	}
 
 }

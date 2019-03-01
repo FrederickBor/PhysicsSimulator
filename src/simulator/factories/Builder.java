@@ -17,7 +17,13 @@ public abstract class Builder<T> {
 	
 	protected double[] jsonArrayToDoubleArray(JSONArray array) {
 		
-		return null;		
+		double[] ret = new double[array.length()];
+		
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = array.getDouble(i);
+		}
+		
+		return ret;		
 	}
 	
 	//Utilizo el SuppressWarnings para quitar la advertencia en la linea
@@ -43,13 +49,15 @@ public abstract class Builder<T> {
 	
 	public JSONObject getBuilderInfo() {
 		
-		return null;
+		JSONObject jsonObject = new JSONObject();
+		
+		jsonObject.put("type", typeTag);
+		jsonObject.put("desc", desc);
+		
+		return jsonObject;
 	}
 	
-	protected JSONObject createData() {
-		
-		return null;
-	}
+	protected JSONObject createData() { return new JSONObject(); }
 	
 	protected String getTypeTag() { return typeTag;}
 	

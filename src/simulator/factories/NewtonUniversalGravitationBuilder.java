@@ -18,4 +18,10 @@ public class NewtonUniversalGravitationBuilder extends Builder<GravityLaws> {
 		return new NewtonUniversalGravity();
 	}
 
+	public JSONObject getBuilderInfo() {
+		JSONObject jsonObject = super.getBuilderInfo();
+		jsonObject.put("data", new JSONObject());
+		
+		return jsonObject;
+	}
 }

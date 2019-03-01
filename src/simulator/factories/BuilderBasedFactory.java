@@ -1,5 +1,6 @@
 package simulator.factories;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -14,14 +15,25 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 	}
 	
 	@Override
-	public T createInstance(JSONObject info) {		
-		return builder.createInstance(info);
+	public T createInstance(JSONObject info) throws IllegalArgumentException {
+		for (Builder<T> b : builderList) {
+			if (b.getTypeTag().equals(info.get("type"))) {
+				return builder.createInstance(info);
+			}
+		}
+		
+		throw new IllegalArgumentException();
 	}
 
 	@Override
 	public List<JSONObject> getInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		List<JSONObject> jsonObjects = new ArrayList<JSONObject>();
+		
+		for (Builder<T> b : builderList) {
+			jsonObjects.add(b.getBuilderInfo());
+		}
+		
+		return jsonObjects;
 	}
 
 }

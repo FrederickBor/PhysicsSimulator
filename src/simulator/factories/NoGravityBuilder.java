@@ -17,5 +17,12 @@ public class NoGravityBuilder extends Builder<GravityLaws> {
 		// TODO Auto-generated method stub
 		return new NoGravity();
 	}
+	
+	public JSONObject getBuilderInfo() {
+		JSONObject jsonObject = super.getBuilderInfo();
+		jsonObject.put("data", new JSONObject());
+		
+		return jsonObject;
+	}
 
 }

@@ -228,7 +228,7 @@ public class Main {
 		
 		if(_outFile == null) {
 			for (int i=0; i<_steps; i++) {
-				controller.run(_dtime);
+				controller.run(_dtime, null);
 			}
 		}
 		else {
@@ -259,5 +259,9 @@ public class Main {
 			System.err.println();
 			e.printStackTrace();
 		}
+	}
+
+	public static int getSteps() {
+		return _steps;
 	}
 }
