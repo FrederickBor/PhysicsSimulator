@@ -1,8 +1,8 @@
 package simulator.launcher;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +54,10 @@ public class Main {
 	// factories
 	private static Factory<Body> _bodyFactory;
 	private static Factory<GravityLaws> _gravityLawsFactory;
-	private static List<Builder<Body>> _bodies;
-	private static List<Builder<GravityLaws>> _gravities;
+	public static List<Builder<Body>> _bodies;
+	public static List<Builder<GravityLaws>> _gravities;
+	
+	protected static InputStream _in;
 
 	private static void init() {
 		// initialize the bodies factory
@@ -93,9 +95,9 @@ public class Main {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
+			parseOutFileOption(line);
 			parseDeltaTimeOption(line);
 			parseGravityLawsOption(line);
-			parseOutFileOption(line);
 			parseStepsOption(line);
 
 			// if there are some remaining arguments, then something wrong is
@@ -125,6 +127,14 @@ public class Main {
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
+		// input file
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Bodies JSON output file.").build());
+			
+		//Steps
+		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
+				.desc("Steps Number")
+				.build());
+		
 		// delta-time
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
 				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
@@ -171,7 +181,7 @@ public class Main {
 	
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
-		if (_inFile == null) {
+		if (_outFile == null) {
 			throw new ParseException("An output file is required");
 		}
 	}
@@ -226,23 +236,10 @@ public class Main {
 		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
 		Controller controller = new Controller(ps, _bodyFactory);
 		
-		if(_outFile == null) {
-			for (int i=0; i<_steps; i++) {
-				controller.run(_dtime, null);
-			}
-		}
-		else {
-			File output = new File(_outFile);
-			try (OutputStream out = new FileOutputStream(output)){
-				for (int i=0; i<_steps; i++) {
-					controller.run(_dtime, out);
-				}
-			}
-			catch (Exception e) {
-				throw new ParseException("Error with output file: " + _outFile);
-			}
-		}
 		
+		controller.loadBodies(new FileInputStream(_inFile));
+		
+		controller.run(_dtime, new FileOutputStream(_outFile));		
 	}
 
 	private static void start(String[] args) throws Exception {

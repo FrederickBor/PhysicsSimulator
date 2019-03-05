@@ -10,8 +10,7 @@ import simulator.model.Body;
 public class BasicBodyBuilder extends Builder<Body> {
 
 	public BasicBodyBuilder() {
-		desc = "Basic Body";
-		typeTag = "basic";
+		super("basic","Basic Body");
 	}
 	
 	@Override
@@ -23,26 +22,28 @@ public class BasicBodyBuilder extends Builder<Body> {
 		double mass = data.getDouble("mass");
 		
 		//Obtenemos los datos del vector posicion y lo creamos
-		JSONArray aux = data.getJSONArray("pos");
-		double [] arrayData = new double[data.length()];
-		for (int i = 0; i < aux.length(); i++) {
-		     arrayData[i] = aux.getLong(i); 
-		}
-		Vector pos = new Vector(arrayData);
+		Vector pos = new Vector(jsonArrayToDoubleArray(data.getJSONArray("pos")));
 		
 		//Obtenemos los datos del vector velocidad y lo creamos
-		aux = data.getJSONArray("vel");
-		arrayData = new double[data.length()];
-		for (int i = 0; i < aux.length(); i++) {
-		     arrayData[i] = aux.getLong(i); 
-		}
-		Vector vel = new Vector(arrayData);
+		Vector vel = new Vector(jsonArrayToDoubleArray(data.getJSONArray("vel")));
 		
 		//Creamos un vector vacio para la aceleracion
-		Vector acc = new Vector(data.length());
+		Vector acc = new Vector(jsonArrayToDoubleArray(data.getJSONArray("vel")).length);
 		
 		//Creamos el nuevo cuerpo
 		return new Body(id, vel, acc, pos, mass);
+	}
+	
+	@Override
+	protected JSONObject createData() {
+		JSONObject data = new JSONObject();
+		
+		data.put("id", "identifier");
+		data.put("pos", "position");
+		data.put("vel", "velocity");
+		data.put("mass", "mass_");
+		
+		return data;
 	}
 	
 	public JSONObject getBuilderInfo() {

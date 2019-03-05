@@ -10,8 +10,7 @@ import simulator.model.MassLossingBody;
 public class MassLossingBodyBuilder extends Builder<Body> {
 
 	public MassLossingBodyBuilder() {
-		desc = "Mass Lossing Body";
-		typeTag = "mlb";
+		super("mlb", "Mass Lossing Body");
 	}
 	
 	@Override
@@ -49,6 +48,20 @@ public class MassLossingBodyBuilder extends Builder<Body> {
 		
 		//Creamos el nuevo cuerpo
 		return new MassLossingBody(id, vel, acc, pos, mass, lFactor, lFrequ);
+	}
+	
+	@Override
+	protected JSONObject createData() {
+		JSONObject data = new JSONObject();
+		
+		data.put("id", "identifier");
+		data.put("pos", "position");
+		data.put("vel", "velocity");
+		data.put("mass", "mass_");
+		data.put("freq", "frequency");
+		data.put("factor", "reduction factor");
+		
+		return data;
 	}
 	
 	public JSONObject getBuilderInfo() {

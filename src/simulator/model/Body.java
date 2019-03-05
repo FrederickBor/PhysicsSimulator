@@ -59,25 +59,25 @@ public class Body {
 	}
 	
 	void move(double t) {
-		Vector auxV = new Vector(this.velocity.scale(t));
-		Vector auxA = new Vector(this.acceleration.scale((t * t) / 2));
+		Vector auxV = new Vector(velocity.scale(t));
+		Vector auxA = new Vector(acceleration.scale((t * t) / 2));
 		auxA.plus(auxV);
-		this.position = this.position.plus(auxA);
+		this.position = position.plus(auxA);
 		
-		this.velocity =  this.velocity.plus(new Vector(this.acceleration.scale(t)));
+		this.velocity = velocity.plus(new Vector(acceleration.scale(t)));
 	}
 	
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{ \"id: \" ");
+		sb.append("{ \"id\":  \"");
 		sb.append(this.id);
-		sb.append(", \"mass: \" ");
+		sb.append("\", \"mass\": ");
 		sb.append(this.mass);
-		sb.append(", \"pos: \" ");
+		sb.append(", \"pos\": ");
 		sb.append(this.position.toString());
-		sb.append(", \"vel: \" ");
+		sb.append(", \"vel\": ");
 		sb.append(this.velocity.toString());
-		sb.append(", \"acc: \" ");
+		sb.append(", \"acc\": ");
 		sb.append(this.acceleration.toString());
 		sb.append(" }");
 		

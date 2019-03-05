@@ -8,17 +8,17 @@ import org.json.JSONObject;
 public class BuilderBasedFactory<T> implements Factory<T> {
 
 	List<Builder<T>> builderList;
-	Builder<T> builder;
 	
 	public BuilderBasedFactory(List<Builder<T>> builderList) {
 		this.builderList = builderList;
+		
 	}
 	
 	@Override
 	public T createInstance(JSONObject info) throws IllegalArgumentException {
 		for (Builder<T> b : builderList) {
 			if (b.getTypeTag().equals(info.get("type"))) {
-				return builder.createInstance(info);
+				return b.createInstance(info);
 			}
 		}
 		

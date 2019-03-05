@@ -9,10 +9,11 @@ public abstract class Builder<T> {
 	
 	protected String typeTag, desc;
 	
-	private List<Builder<T>> objects;
+	protected List<Builder<T>> objects;
 	
-	public Builder() {
-		
+	public Builder(String typeTag, String desc) {
+		this.typeTag = typeTag;
+		this.desc = desc;
 	}
 	
 	protected double[] jsonArrayToDoubleArray(JSONArray array) {
@@ -23,28 +24,14 @@ public abstract class Builder<T> {
 			ret[i] = array.getDouble(i);
 		}
 		
-		return ret;		
+		return ret;
 	}
 	
-	//Utilizo el SuppressWarnings para quitar la advertencia en la linea
-	// object = (T) builder.createTheInstance(info);
 	public T createInstance(JSONObject info) throws IllegalArgumentException {
-		if(info.length() == 2 && info.has("Type") && info.has("Data")) {
-			T object = null;
-			
-			for (Builder<T> builder : objects) {
-				if (builder.getTypeTag().equals(info.getString("Type"))) {
-					object = builder.createTheInstance(info.getJSONObject("Data"));
-				}
-			}
-			
-			if (object == null) {throw new IllegalArgumentException();}
-			
-			return object;
-		}
-		else {
-			return null;
-		}
+		T b = null;
+		if (typeTag != null && typeTag.equals(info.getString("type")))
+		b = createTheInstance(info.getJSONObject("data"));
+		return b;
 	}
 	
 	public JSONObject getBuilderInfo() {
@@ -52,6 +39,7 @@ public abstract class Builder<T> {
 		JSONObject jsonObject = new JSONObject();
 		
 		jsonObject.put("type", typeTag);
+		jsonObject.put("data",createData());
 		jsonObject.put("desc", desc);
 		
 		return jsonObject;

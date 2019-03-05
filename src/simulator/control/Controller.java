@@ -3,6 +3,7 @@ package simulator.control;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,24 +42,29 @@ public class Controller {
 	public void run(double dt, OutputStream out) throws IOException{
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("{\"states\": [");
+		sb.append("{\n\"states\" : [\n");
+		
+		sb.append(ps.toString());
+		sb.append(",");
 		
 		for (int i = 0; i < Main.getSteps(); i++) {
 			ps.advance();
 			sb.append(ps.toString());
-			if (i != Main.getSteps() -1 ) sb.append(",");  
+			if (i != Main.getSteps() -1 ) sb.append(",\n");  
 		}
 		
-		sb.append("] }");
+		sb.append("\n]}");
 		
-		if(out != null) {
-			for (Byte b : sb.toString().getBytes()) {
-				out.write(b);
-			}
+		PrintStream p = (out == null) ? null : new PrintStream(out);
+		
+		if(p != null) {
+			p.print(sb.toString());
 		}
 		else {
 			System.out.println(sb.toString());
 		}
+		
+		p.close();
 	}
 	
 }

@@ -1,5 +1,6 @@
 package simulator.model;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,12 +10,13 @@ public class PhysicsSimulator {
 	private double timeLapsed;
 	private List<Body> bodies;
 	
-	public PhysicsSimulator(GravityLaws gl, double dt) throws IllegalArgumentException{
+	public PhysicsSimulator(GravityLaws gl, double dt) {// throws IllegalArgumentException{
 		
-		if (gl == null) throw new IllegalArgumentException();
+		//if (gl == null) throw new IllegalArgumentException();
 		
 		this.dt = dt;
 		this.gl = gl;
+		this.bodies = new ArrayList<Body>();
 		timeLapsed = 0;
 	}
 	
@@ -45,7 +47,7 @@ public class PhysicsSimulator {
 				s.append(",");
 		}
 		
-		s.append("] }");
+		s.append("]}");
 		
 		return s.toString();
 	}
