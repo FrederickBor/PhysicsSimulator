@@ -46,7 +46,7 @@ public class Main {
 
 	// some attributes to stores values corresponding to command-line parameters
 	private static Double _dtime = null;
-	private static Integer _steps = null;
+	private static Integer _steps = 150;
 	private static String _inFile = null;
 	private static String _outFile = null;
 	private static JSONObject _gravityLawsInfo = null;
@@ -73,8 +73,8 @@ public class Main {
 		// initialize the gravity laws factory
 		
 		List<Builder<GravityLaws>> gravities = new ArrayList<Builder<GravityLaws>>();
-		gravities.add(new FallingToCenterGravityBuilder());
 		gravities.add(new NewtonUniversalGravitationBuilder());
+		gravities.add(new FallingToCenterGravityBuilder());
 		gravities.add(new NoGravityBuilder());
 		
 		_gravities = gravities;
@@ -128,11 +128,11 @@ public class Main {
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
 		// input file
-		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Bodies JSON output file.").build());
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written. Default value: the standar output.").build());
 			
 		//Steps
 		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
-				.desc("Steps Number")
+				.desc("An integer representing the number of simulation steps. Default value: 150.")
 				.build());
 		
 		// delta-time
@@ -182,6 +182,7 @@ public class Main {
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
 		if (_outFile == null) {
+			// AQUI DEBERIA MOSTRAR POR CONSOLA LO MISMO QUE ESCRIBIRIA EN EL ARCHIVO DE SALIDA, NO LANZAR UNA EXCEPCION
 			throw new ParseException("An output file is required");
 		}
 	}
@@ -238,8 +239,10 @@ public class Main {
 		
 		
 		controller.loadBodies(new FileInputStream(_inFile));
-		
+		//if (_outFile != null)
 		controller.run(_dtime, new FileOutputStream(_outFile));		
+		//else	
+		//	controller.run(_dtime, new FileOutputStream(System.out));
 	}
 
 	private static void start(String[] args) throws Exception {
