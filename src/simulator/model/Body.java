@@ -59,12 +59,9 @@ public class Body {
 	}
 	
 	void move(double t) {
-		Vector auxV = new Vector(velocity.scale(t));
-		Vector auxA = new Vector(acceleration.scale((t * t) / 2));
-		auxA.plus(auxV);
-		this.position = position.plus(auxA);
-		
-		this.velocity = velocity.plus(new Vector(acceleration.scale(t)));
+		this.position = position.plus(velocity.scale(t).plus(acceleration.scale((t * t) / 2)));
+				
+		this.velocity = velocity.plus(acceleration.scale(t));
 	}
 	
 	public String toString() {

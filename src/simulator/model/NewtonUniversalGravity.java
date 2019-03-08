@@ -27,8 +27,7 @@ public class NewtonUniversalGravity implements GravityLaws {
 				Vector allForces = sumOfForces(body, bodies, dim);
 				Vector newAccelerationVector = allForces.scale(1/body.getMass());
 				body.setAcceleration(newAccelerationVector);
-			}		
-			
+			}			
 		}
 	}
 	
@@ -39,7 +38,7 @@ public class NewtonUniversalGravity implements GravityLaws {
 			//Calculamos el vector de la fuerza que aplica
 			// j sobre i
 			if (i != j )
-				suma.plus(calculateFij(i,j,dim));
+				suma = suma.plus(calculateFij(i,j,dim));
 			
 		}
 		
@@ -47,7 +46,6 @@ public class NewtonUniversalGravity implements GravityLaws {
 	}
 	
 	private Vector calculateFij(Body i, Body j, int dim) {
-		Vector aux = new Vector(dim);
 		
 		//Calculamos el Vector dij
 		Vector pi, pj;
@@ -65,8 +63,7 @@ public class NewtonUniversalGravity implements GravityLaws {
 		double Fij = (G * mi * mj ) / (denominador * denominador);
 		
 		//Calculamos dij * Fij
-		aux = dijVector.scale(Fij);
 		
-		return aux;
+		return dijVector.scale(Fij);
 	}
 }

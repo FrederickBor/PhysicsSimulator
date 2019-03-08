@@ -25,6 +25,7 @@ public class PhysicsSimulator {
 	}
 	
 	public void advance() {
+		System.out.println(dt);
 		gl.apply(bodies);
 		for (Body body : bodies) {
 			body.move(dt);
