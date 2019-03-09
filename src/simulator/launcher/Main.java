@@ -43,10 +43,11 @@ public class Main {
 
 	// default values for some parameters
 	private final static Double _dtimeDefaultValue = 2500.0;
+	private final static Integer _stepsDefaultValue = 150;
 
 	// some attributes to stores values corresponding to command-line parameters
 	private static Double _dtime = null;
-	private static Integer _steps = 150;
+	private static Integer _steps = null;
 	private static String _inFile = null;
 	private static String _outFile = null;
 	private static JSONObject _gravityLawsInfo = null;
@@ -132,7 +133,8 @@ public class Main {
 			
 		//Steps
 		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
-				.desc("An integer representing the number of simulation steps. Default value: 150.")
+				.desc("An integer representing the number of simulation steps. Default value: " 
+						+ _stepsDefaultValue + ".")
 				.build());
 		
 		// delta-time
@@ -181,10 +183,6 @@ public class Main {
 	
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
-		if (_outFile == null) {
-			// AQUI DEBERIA MOSTRAR POR CONSOLA LO MISMO QUE ESCRIBIRIA EN EL ARCHIVO DE SALIDA, NO LANZAR UNA EXCEPCION
-			throw new ParseException("An output file is required");
-		}
 	}
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
@@ -198,7 +196,7 @@ public class Main {
 	}
 	
 	private static void parseStepsOption(CommandLine line) throws ParseException {
-		String s = line.getOptionValue("s", "1");
+		String s = line.getOptionValue("s", _stepsDefaultValue.toString());
 		try {
 			_steps = Integer.parseInt(s);
 			assert (_steps > 0);
@@ -239,10 +237,10 @@ public class Main {
 		
 		
 		controller.loadBodies(new FileInputStream(_inFile));
-		//if (_outFile != null)
-		controller.run(_dtime, new FileOutputStream(_outFile));		
-		//else	
-		//	controller.run(_dtime, new FileOutputStream(System.out));
+		if (_outFile != null)
+			controller.run(_dtime, new FileOutputStream(_outFile));		
+		else	
+			controller.run(_dtime, null);
 	}
 
 	private static void start(String[] args) throws Exception {

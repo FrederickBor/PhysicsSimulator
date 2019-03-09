@@ -64,7 +64,7 @@ public class Controller {
 			System.out.println(sb.toString());
 		}
 		
-		p.close();
+		if (p!=null) p.close();
 	}
 	
 }
