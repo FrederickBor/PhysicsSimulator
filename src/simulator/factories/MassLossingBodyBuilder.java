@@ -29,7 +29,7 @@ public class MassLossingBodyBuilder extends Builder<Body> {
 		
 		//Obtenemos los datos del vector posicion y lo creamos
 		JSONArray aux = data.getJSONArray("pos");
-		double [] arrayData = new double[data.length()];
+		double [] arrayData = new double[aux.length()];
 		for (int i = 0; i < aux.length(); i++) {
 		     arrayData[i] = aux.getLong(i); 
 		}
@@ -37,14 +37,14 @@ public class MassLossingBodyBuilder extends Builder<Body> {
 		
 		//Obtenemos los datos del vector velocidad y lo creamos
 		aux = data.getJSONArray("vel");
-		arrayData = new double[data.length()];
+		arrayData = new double[aux.length()];
 		for (int i = 0; i < aux.length(); i++) {
 		     arrayData[i] = aux.getLong(i); 
 		}
 		Vector vel = new Vector(arrayData);
 		
 		//Creamos un vector vacio para la aceleracion
-		Vector acc = new Vector(data.length());
+		Vector acc = new Vector(arrayData.length);
 		
 		//Creamos el nuevo cuerpo
 		return new MassLossingBody(id, vel, acc, pos, mass, lFactor, lFrequ);
