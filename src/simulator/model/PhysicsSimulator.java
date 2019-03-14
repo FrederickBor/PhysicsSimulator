@@ -10,9 +10,10 @@ public class PhysicsSimulator {
 	private double timeLapsed;
 	private List<Body> bodies;
 	
-	public PhysicsSimulator(GravityLaws gl, double dt) {// throws IllegalArgumentException{
+	public PhysicsSimulator(GravityLaws gl, double dt) throws IllegalArgumentException{
 		
-		//if (gl == null) throw new IllegalArgumentException();
+		if (gl == null) throw new IllegalArgumentException();
+		if (dt <= 0) throw new IllegalArgumentException();
 		
 		this.dt = dt;
 		this.gl = gl;
