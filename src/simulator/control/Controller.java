@@ -66,5 +66,31 @@ public class Controller {
 		
 		if (p!=null) p.close();
 	}
+
+	public void reset(){
+		ps.reset();
+	}
+
+	public void setDeltaTime(double dt){
+		ps.setDeltaTime(dt);
+	}
+
+	public void addObserver(SimulatorObserver o){
+		ps.addObserver(o);
+	}
+
+	public void run(int n){
+		for (int i = 0; i<n; i++){
+			ps.advance();
+		}
+	}
+
+	public Factory<GravityLaws> getGravityLawsFactory(){
+		//POR IMPLEMENTAR
+	}
+
+	public void setGravityLaws(JSONObject info){
+		//POR IMPLEMENTAR
+	}
 	
 }

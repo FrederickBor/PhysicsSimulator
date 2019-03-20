@@ -66,4 +66,8 @@ public class NewtonUniversalGravity implements GravityLaws {
 		
 		return dijVector.scale(Fij);
 	}
+
+	public String toString() {
+		return "Newton Universal Gravitation Law";
+	}
 }
