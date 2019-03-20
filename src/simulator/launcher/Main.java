@@ -58,7 +58,7 @@ public class Main {
 	public static List<Builder<Body>> _bodies;
 	public static List<Builder<GravityLaws>> _gravities;
 	
-	protected static InputStream _in;
+	protected static InputStream _in;	//NO SE USA -> A ELIMINAR
 
 	private static void init() {
 		// initialize the bodies factory
@@ -67,7 +67,7 @@ public class Main {
 		bodies.add(new BasicBodyBuilder());
 		bodies.add(new MassLossingBodyBuilder());
 		
-		_bodies = bodies;
+		_bodies = bodies;	//VER PARA QUE ES???
 		
 		Main._bodyFactory = new BuilderBasedFactory<Body>(_bodies);
 		
@@ -128,7 +128,7 @@ public class Main {
 		// input file
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
-		// input file
+		// output file
 		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written. Default value: the standar output.").build());
 			
 		//Steps

@@ -22,7 +22,7 @@ public class BuilderBasedFactory<T> implements Factory<T> {
 			}
 		}
 		
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException("Algo ha ido mal con los contructores...");
 	}
 
 	@Override
