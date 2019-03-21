@@ -27,13 +27,26 @@ public abstract class Builder<T> {
 		return ret;
 	}
 	
+	/**
+	 * Si la información suministrada por info es correcta, entonces crea un objeto de tipo T (i.e., una instancia de una subclase de T). En otro caso devuelve null para indicar que este constructor es incapaz de reconocer ese formato.
+	 * En caso de que reconozca el campo type pero haya un error en alguno de los valores suministrados por la sección data, el método lanza una excepción IllegalArgumentException.
+	 * 
+	 * @param info Estructura JSON que describe el objeto a crear.
+	 * @return Una instancia de la clase correspondiente - una instancia de un subtipo de T.
+	 * @throws IllegalArgumentException En caso de que haya un error en alguno de los valores suministrados por la sección data.
+	 */
 	public T createInstance(JSONObject info) throws IllegalArgumentException {
 		T b = null;
 		if (typeTag != null && typeTag.equals(info.getString("type")))
-		b = createTheInstance(info.getJSONObject("data"));
+			b = createTheInstance(info.getJSONObject("data"));
 		return b;
 	}
 	
+	/**
+	 * Devuelve un objeto JSON que sirve de plantilla para el correspondiente constructor, i.e., un valor válido para el parámetro de createInstance.
+	 * 
+	 * @return Un objeto JSON que sirve de plantilla para el correspondiente constructor.
+	 */
 	public JSONObject getBuilderInfo() {
 		
 		JSONObject jsonObject = new JSONObject();

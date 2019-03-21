@@ -42,6 +42,17 @@ public class Controller {
 		
 	}
 
+	/**
+	 * Ejecuta el simulador n pasos y muestra los diferentes estados en out, utilizando el siguiente formato JSON:
+	 * 
+	 * { "states": [s0, s1, ... , sn] }
+	 * 
+	 * donde s0 es el estado del simulador antes de ejecutar ninún paso, y cada Si con i >= 1, es el estado del simulador inmediatamente después de ejecutar el i-ésimo paso de simulación.
+	 * 
+	 * @param dt Representa el "Tiempo real por paso" de simulación.
+	 * @param out Indica donde vamos a obtener la salida de los datos de la simulación. Si es null será por consola, sino en el archivo especificado por la ruta pasada por parámetro.
+	 * @throws IOException En caso de cualquier problema de E/S.
+	 */
 	public void run(double dt, OutputStream out) throws IOException{
 		StringBuilder sb = new StringBuilder();
 		
@@ -49,6 +60,7 @@ public class Controller {
 		
 		sb.append(ps.toString());
 		sb.append(",");
+		sb.append('\n');
 		
 		for (int i = 0; i < Main.getSteps(); i++) {
 			ps.advance();
