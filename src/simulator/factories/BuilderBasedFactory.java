@@ -5,10 +5,20 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+/**
+ * Esta clase implementa una factoría de obtejos basada de en Builders de tipo T (Bodies y GravityLaws). Tiene como atributo una lista de constructores de los tipos T ya mencionados.
+ * 
+ * @param <T> En el contexto del simulador de física este parámetro van a ser objetos de las clases Body (y subclases) y GravityLaws (y subclases).
+ */
 public class BuilderBasedFactory<T> implements Factory<T> {
 
 	List<Builder<T>> builderList;
 	
+	/**
+	 * Constructor de la clase.
+	 * 
+	 * @param builderList Lista de constructores de clases (y subclases) de tipo T (Bodies y GravityLaws).
+	 */
 	public BuilderBasedFactory(List<Builder<T>> builderList) {
 		this.builderList = builderList;
 		

@@ -67,9 +67,9 @@ public class Main {
 		bodies.add(new BasicBodyBuilder());
 		bodies.add(new MassLossingBodyBuilder());
 		
-		_bodies = bodies;	//VER PARA QUE ES???
+		_bodies = bodies;	//VER PARA QUE ES??? - ES UNA LISTA DE BUILDERS DE BODIES
 		
-		Main._bodyFactory = new BuilderBasedFactory<Body>(_bodies);
+		_bodyFactory = new BuilderBasedFactory<Body>(_bodies);	//FACTORÍA DE BODIES
 		
 		// initialize the gravity laws factory
 		
@@ -78,9 +78,9 @@ public class Main {
 		gravities.add(new FallingToCenterGravityBuilder());
 		gravities.add(new NoGravityBuilder());
 		
-		_gravities = gravities;
+		_gravities = gravities;		//LISTA DE BUILDERS DE GL
 		
-		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities);
+		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities);	//FACTORÍA DE GL
 	}
 
 	private static void parseArgs(String[] args) {
@@ -209,8 +209,8 @@ public class Main {
 
 		// this line is just a work around to make it work even when _gravityLawsFactory
 		// is null, you can remove it when've defined _gravityLawsFactory
-		if (_gravityLawsFactory == null)
-			return;
+		if (_gravityLawsFactory == null)		//SE PUEDE ELIMINAR
+			return;		//SE PUEDE ELIMINAR
 
 		String gl = line.getOptionValue("gl");
 		if (gl != null) {
@@ -230,13 +230,14 @@ public class Main {
 
 	private static void startBatchMode() throws Exception {
 		// create and connect components, then start the simulator
-		BuilderBasedFactory<GravityLaws> builder = new BuilderBasedFactory<GravityLaws>(_gravities);
-		GravityLaws gl = builder.createInstance(_gravityLawsInfo);
+		//BuilderBasedFactory<GravityLaws> builder = new BuilderBasedFactory<GravityLaws>(_gravities);	//ESTO YA SE GENERA EN init() NO ES NECESARIO HACERLO DE NUEVO AQUÍ
+		//GravityLaws gl = builder.createInstance(_gravityLawsInfo);
+		GravityLaws gl = _gravityLawsFactory.createInstance(_gravityLawsInfo);
 		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
 		Controller controller = new Controller(ps, _bodyFactory);
 		
-		
 		controller.loadBodies(new FileInputStream(_inFile));
+		
 		if (_outFile != null)
 			controller.run(_dtime, new FileOutputStream(_outFile));		
 		else	
