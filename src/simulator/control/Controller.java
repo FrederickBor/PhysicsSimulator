@@ -9,10 +9,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import simulator.factories.BuilderBasedFactory;
 import simulator.factories.Factory;
 import simulator.launcher.Main;
 import simulator.model.Body;
+import simulator.model.GravityLaws;
 import simulator.model.PhysicsSimulator;
+import simulator.model.SimulatorObserver;
 
 public class Controller {
 	
@@ -86,11 +89,11 @@ public class Controller {
 	}
 
 	public Factory<GravityLaws> getGravityLawsFactory(){
-		//POR IMPLEMENTAR
+		return new BuilderBasedFactory<GravityLaws>(Main._gravities);
 	}
 
 	public void setGravityLaws(JSONObject info){
-		//POR IMPLEMENTAR
+		ps.setGravityLaws(getGravityLawsFactory().createInstance(info));
 	}
 	
 }

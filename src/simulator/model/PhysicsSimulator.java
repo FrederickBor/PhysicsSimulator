@@ -29,17 +29,17 @@ public class PhysicsSimulator {
 		this.bodies = new ArrayList<Body>();
 
 		for (SimulatorObserver ob : observers){
-			o.onReset(bodies, timeLapsed, dt, gl.toString());
+			ob.onReset(bodies, timeLapsed, dt, gl.toString());
 		}
 	}
 
-	public setDeltaTime(double dt){
+	public void setDeltaTime(double dt){
 		if (dt <= 0) throw new IllegalArgumentException();
 
 		this.dt = dt;
 
 		for (SimulatorObserver ob : observers){
-			o.onDeltaTimeChanged(dt);
+			ob.onDeltaTimeChanged(dt);
 		}
 	}
 
@@ -49,7 +49,7 @@ public class PhysicsSimulator {
 		this.gl = gl;
 
 		for (SimulatorObserver ob : observers){
-			o.onGravityLawChanged(gl.toString());
+			ob.onGravityLawChanged(gl.toString());
 		}
 	}
 
@@ -72,7 +72,7 @@ public class PhysicsSimulator {
 		bodies.add(b);
 
 		for (SimulatorObserver ob : observers){
-			o.onBodyAdded(bodies, b);
+			ob.onBodyAdded(bodies, b);
 		}
 	}
 	
@@ -84,10 +84,11 @@ public class PhysicsSimulator {
 		timeLapsed += dt;
 
 		for (SimulatorObserver ob : observers){
-			o.onAdvance(bodies, timeLapsed);
+			ob.onAdvance(bodies, timeLapsed);
 		}
 	}
 	
+	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		
