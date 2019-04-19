@@ -11,9 +11,9 @@ public class NoGravity implements GravityLaws {
 	public void apply(List<Body> bodies) {
 		// No hace nada
 	}
-
+	
 	public String toString() {
-		return "No Gravity Law";
+		return "No Gravity Law (ng)";
 	}
 
 }

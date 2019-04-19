@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 /*
  * Examples of command-line parameters:
  * 
@@ -38,6 +40,7 @@ import simulator.factories.NoGravityBuilder;
 import simulator.model.Body;
 import simulator.model.GravityLaws;
 import simulator.model.PhysicsSimulator;
+import simulator.view.MainWindow;
 
 public class Main {
 
@@ -50,6 +53,7 @@ public class Main {
 	private static Integer _steps = null;
 	private static String _inFile = null;
 	private static String _outFile = null;
+	private static String _mode = null;
 	private static JSONObject _gravityLawsInfo = null;
 
 	// factories
@@ -57,30 +61,30 @@ public class Main {
 	private static Factory<GravityLaws> _gravityLawsFactory;
 	public static List<Builder<Body>> _bodies;
 	public static List<Builder<GravityLaws>> _gravities;
-	
-	protected static InputStream _in;	//NO SE USA -> A ELIMINAR
+
+	protected static InputStream _in; // NO SE USA -> A ELIMINAR
 
 	private static void init() {
 		// initialize the bodies factory
-		
+
 		List<Builder<Body>> bodies = new ArrayList<Builder<Body>>();
 		bodies.add(new BasicBodyBuilder());
 		bodies.add(new MassLossingBodyBuilder());
-		
-		_bodies = bodies;	//VER PARA QUE ES??? - ES UNA LISTA DE BUILDERS DE BODIES
-		
-		_bodyFactory = new BuilderBasedFactory<Body>(_bodies);	//FACTORÍA DE BODIES
-		
+
+		_bodies = bodies; // VER PARA QUE ES??? - ES UNA LISTA DE BUILDERS DE BODIES
+
+		_bodyFactory = new BuilderBasedFactory<Body>(_bodies); // FACTORÃ�A DE BODIES
+
 		// initialize the gravity laws factory
-		
+
 		List<Builder<GravityLaws>> gravities = new ArrayList<Builder<GravityLaws>>();
 		gravities.add(new NewtonUniversalGravitationBuilder());
 		gravities.add(new FallingToCenterGravityBuilder());
 		gravities.add(new NoGravityBuilder());
-		
-		_gravities = gravities;		//LISTA DE BUILDERS DE GL
-		
-		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities);	//FACTORÍA DE GL
+
+		_gravities = gravities; // LISTA DE BUILDERS DE GL
+
+		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities); // FACTORÃ�A DE GL
 	}
 
 	private static void parseArgs(String[] args) {
@@ -94,12 +98,14 @@ public class Main {
 		CommandLineParser parser = new DefaultParser();
 		try {
 			CommandLine line = parser.parse(cmdLineOptions, args);
+			parseModeOption(line);
 			parseHelpOption(line, cmdLineOptions);
 			parseInFileOption(line);
 			parseOutFileOption(line);
 			parseDeltaTimeOption(line);
 			parseGravityLawsOption(line);
 			parseStepsOption(line);
+			
 
 			// if there are some remaining arguments, then something wrong is
 			// provided in the command line!
@@ -129,22 +135,25 @@ public class Main {
 		cmdLineOptions.addOption(Option.builder("i").longOpt("input").hasArg().desc("Bodies JSON input file.").build());
 
 		// output file
-		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg().desc("Output file, where output is written. Default value: the standar output.").build());
-			
-		//Steps
-		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg()
-				.desc("An integer representing the number of simulation steps. Default value: " 
-						+ _stepsDefaultValue + ".")
+		cmdLineOptions.addOption(Option.builder("o").longOpt("output").hasArg()
+				.desc("Output file, where output is written. Default value: the standar output.").build());
+
+		// Steps
+		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg().desc(
+				"An integer representing the number of simulation steps. Default value: " + _stepsDefaultValue + ".")
 				.build());
-		
+
 		// delta-time
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
 				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
 						+ _dtimeDefaultValue + ".")
 				.build());
+		
+		// mode
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc("Execution Mode.").build());
 
 		// gravity laws -- there is a workaround to make it work even when
-		// _gravityLawsFactory is null. 
+		// _gravityLawsFactory is null.
 		//
 		String gravityLawsValues = "N/A";
 		String defaultGravityLawsValue = "N/A";
@@ -174,13 +183,20 @@ public class Main {
 		}
 	}
 
+	private static void parseModeOption(CommandLine line) throws ParseException {
+		_mode = line.getOptionValue("m");
+		if (_mode == null) {
+			throw new ParseException("A mode has to be specified");
+		}
+	}
+
 	private static void parseInFileOption(CommandLine line) throws ParseException {
 		_inFile = line.getOptionValue("i");
-		if (_inFile == null) {
+		if (_inFile == null && _mode.toUpperCase().equals("BATCH")) {
 			throw new ParseException("An input file of bodies is required");
 		}
 	}
-	
+
 	private static void parseOutFileOption(CommandLine line) throws ParseException {
 		_outFile = line.getOptionValue("o");
 	}
@@ -194,7 +210,7 @@ public class Main {
 			throw new ParseException("Invalid delta-time value: " + dt);
 		}
 	}
-	
+
 	private static void parseStepsOption(CommandLine line) throws ParseException {
 		String s = line.getOptionValue("s", _stepsDefaultValue.toString());
 		try {
@@ -204,13 +220,8 @@ public class Main {
 			throw new ParseException("Invalid steps value: " + s);
 		}
 	}
-	
-	private static void parseGravityLawsOption(CommandLine line) throws ParseException {
 
-		// this line is just a work around to make it work even when _gravityLawsFactory
-		// is null, you can remove it when've defined _gravityLawsFactory
-		if (_gravityLawsFactory == null)		//SE PUEDE ELIMINAR
-			return;		//SE PUEDE ELIMINAR
+	private static void parseGravityLawsOption(CommandLine line) throws ParseException {
 
 		String gl = line.getOptionValue("gl");
 		if (gl != null) {
@@ -230,23 +241,46 @@ public class Main {
 
 	private static void startBatchMode() throws Exception {
 		// create and connect components, then start the simulator
-		//BuilderBasedFactory<GravityLaws> builder = new BuilderBasedFactory<GravityLaws>(_gravities);	//ESTO YA SE GENERA EN init() NO ES NECESARIO HACERLO DE NUEVO AQUÍ
-		//GravityLaws gl = builder.createInstance(_gravityLawsInfo);
+		// BuilderBasedFactory<GravityLaws> builder = new
+		// BuilderBasedFactory<GravityLaws>(_gravities); //ESTO YA SE GENERA EN init()
+		// NO ES NECESARIO HACERLO DE NUEVO AQUÃ�
+		// GravityLaws gl = builder.createInstance(_gravityLawsInfo);
 		GravityLaws gl = _gravityLawsFactory.createInstance(_gravityLawsInfo);
 		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
-		Controller controller = new Controller(ps, _bodyFactory);
-		
+		Controller controller = new Controller(ps, _bodyFactory,_gravityLawsFactory);
+
 		controller.loadBodies(new FileInputStream(_inFile));
-		
+
 		if (_outFile != null)
-			controller.run(_dtime, new FileOutputStream(_outFile));		
-		else	
+			controller.run(_dtime, new FileOutputStream(_outFile));
+		else
 			controller.run(_dtime, null);
+	}
+	
+	private static void startGUIMode() throws Exception {
+		GravityLaws gl = _gravityLawsFactory.createInstance(_gravityLawsInfo);
+		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
+		Controller controller = new Controller(ps, _bodyFactory,_gravityLawsFactory);
+		
+		if (_inFile == null) {
+			controller.loadBodies(new FileInputStream(_inFile));
+		}
+
+		final MainWindow v = new MainWindow(controller);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				v.setVisible(true);
+			}});
 	}
 
 	private static void start(String[] args) throws Exception {
 		parseArgs(args);
-		startBatchMode();
+		if (_mode.toUpperCase().equals("BATCH")) {
+			startBatchMode();
+		} else {
+			System.out.println("ENTRO");
+			startGUIMode();
+		}
 	}
 
 	public static void main(String[] args) {

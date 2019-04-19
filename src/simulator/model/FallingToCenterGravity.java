@@ -19,7 +19,7 @@ public class FallingToCenterGravity implements GravityLaws {
 	}
 
 	public String toString() {
-		return "Falling To Center Gravity Law";
+		return "Falling to Center Gravity Law (ftcg)";
 	}
 
 }

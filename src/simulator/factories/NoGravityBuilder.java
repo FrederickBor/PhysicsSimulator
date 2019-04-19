@@ -23,5 +23,4 @@ public class NoGravityBuilder extends Builder<GravityLaws> {
 		
 		return jsonObject;
 	}
-
 }

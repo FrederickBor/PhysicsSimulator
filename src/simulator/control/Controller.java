@@ -2,6 +2,7 @@ package simulator.control;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream.GetField;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -21,10 +22,12 @@ public class Controller {
 	
 	PhysicsSimulator ps;
 	Factory<Body> bodyFactory;
+	Factory<GravityLaws> gravityLawsFactory;
 	
-	public Controller(PhysicsSimulator ps, Factory<Body> bodyFactory) {
+	public Controller(PhysicsSimulator ps, Factory<Body> bodyFactory, Factory<GravityLaws> gravityLawsFactory) {
 		this.ps = ps;
 		this.bodyFactory = bodyFactory;
+		this.gravityLawsFactory = gravityLawsFactory;
 	}
 	
 	public void loadBodies(InputStream in) {
@@ -101,11 +104,16 @@ public class Controller {
 	}
 
 	public Factory<GravityLaws> getGravityLawsFactory(){
-		return new BuilderBasedFactory<GravityLaws>(Main._gravities);
+		return gravityLawsFactory;
 	}
 
 	public void setGravityLaws(JSONObject info){
-		ps.setGravityLaws(getGravityLawsFactory().createInstance(info));
+		GravityLaws newGravityLaw = gravityLawsFactory.createInstance(info); 
+		ps.setGravityLaws(newGravityLaw);
+	}
+	
+	public int getBodiesQuantity() {
+		return ps.getBodiesQuantity();
 	}
 	
 }

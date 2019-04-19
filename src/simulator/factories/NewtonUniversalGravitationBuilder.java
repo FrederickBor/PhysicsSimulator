@@ -22,4 +22,5 @@ public class NewtonUniversalGravitationBuilder extends Builder<GravityLaws> {
 		
 		return jsonObject;
 	}
+	
 }

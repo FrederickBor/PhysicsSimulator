@@ -86,5 +86,5 @@ public class MassLossingBodyBuilder extends Builder<Body> {
 		
 		return jsonObject;
 	}
-
+	
 }

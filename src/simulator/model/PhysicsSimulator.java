@@ -130,4 +130,8 @@ public class PhysicsSimulator {
 		
 		return s.toString();
 	}
+	
+	public int getBodiesQuantity() {
+		return bodies.size();
+	}
 }

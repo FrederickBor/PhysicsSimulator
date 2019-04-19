@@ -60,9 +60,9 @@ public abstract class Builder<T> {
 	
 	protected JSONObject createData() { return new JSONObject(); }
 	
-	protected String getTypeTag() { return typeTag;}
+	public String getTypeTag() { return typeTag;}
 	
-	protected String getDesc() { return desc;}
+	public String getDesc() { return desc;}
 	
 	protected abstract T createTheInstance(JSONObject object);
 }
