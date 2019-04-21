@@ -11,7 +11,6 @@ import simulator.misc.Vector;
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
 
 	private List<Body> _bodies;
-	private Object[][] data;
 	private final String[] columnNames = { "Id", "Mass", "Position", "Velocity", "Acceleration" };
 	private final Class[] columnClasses = {
 			(new String()).getClass(),
@@ -23,7 +22,6 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
 	public BodiesTableModel(Controller ctrl) {
 		_bodies = new ArrayList<>();
-		data = new Object[_bodies.size()][columnNames.length];
 		ctrl.addObserver(this);
 	}
 	
@@ -44,8 +42,21 @@ public class BodiesTableModel extends AbstractTableModel implements SimulatorObs
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		
-		return null;
+		switch (col) {
+		case 0: //ID
+			return _bodies.get(row).getId();
+		case 1: // Mass
+			return _bodies.get(row).getMass();
+		case 2: // Position
+			return _bodies.get(row).getPosition();
+		case 3: // Velocity
+			return _bodies.get(row).getVelocity();
+		case 4: // Acceleration
+			return _bodies.get(row).getAcceleration();
+
+		default:
+			return _bodies.get(row);
+		}
 	}
 
 	@Override

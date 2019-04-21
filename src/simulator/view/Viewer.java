@@ -125,19 +125,29 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	
 	private void drawCenterCross(Graphics2D gr) {
 		gr.setColor(Color.RED);
-		gr.drawLine(_centerX-5, _centerY, _centerX+5, _centerY);
-		gr.drawLine(_centerX, _centerY-5, _centerX, _centerY+5);
+		// Horizontal line
+		gr.drawLine(_centerX-4, _centerY, _centerX+4, _centerY);
+		// Vertical line
+		gr.drawLine(_centerX, _centerY-4, _centerX, _centerY+4);
 	}
 	
 	private void drawBodies(Graphics2D gr) {
-		gr.setColor(Color.BLUE);
+		
+		int radio = 5;
+		int diametro = radio*2;
+		
 		for (Body body : _bodies) {
 			double x = body.getPosition().coordinate(0);
 			double y = body.getPosition().coordinate(1);
-			int circleX = _centerX + (int) (x/_scale);
-			int circleY = _centerY - (int) (y/_scale);
+			int circleX = _centerX + (int) (x/_scale) - radio;
+			int circleY = _centerY - (int) (y/_scale) - radio;
 			
-			gr.fillOval(circleX, circleY, 10, 10);
+			gr.setColor(Color.BLUE);
+			gr.fillOval(circleX, circleY, diametro, diametro);
+			
+			gr.setColor(Color.BLACK);
+			gr.drawString(body.getId(), circleX - (int) (body.getId().length()/2), circleY - gr.getFontMetrics().getAscent());
+			
 		}
 		
 		repaint();
@@ -172,11 +182,13 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	@Override
 	public void onRegister(List<Body> bodies, double time, double dt, String gLawsDesc) {
 		_bodies = bodies;
+		autoScale();
 	}
 
 	@Override
 	public void onReset(List<Body> bodies, double time, double dt, String gLawsDesc) {
 		_bodies = bodies;
+		autoScale();
 	}
 
 	@Override
@@ -187,7 +199,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 
 	@Override
 	public void onAdvance(List<Body> bodies, double time) {
-		_bodies = bodies;
+		repaint();
 	}
 
 	@Override

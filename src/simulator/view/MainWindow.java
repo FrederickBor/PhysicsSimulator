@@ -15,7 +15,7 @@ public class MainWindow extends JFrame {
 	// Añade atributos para todos los componentes (clases)
 	Controller _ctrl;
 	public static final int width = 1000;
-	public static final int height = 800;
+	public static final int height = 820;
 
 	public MainWindow(Controller ctrl) {
 		super("Physics Simulator");
@@ -37,6 +37,9 @@ public class MainWindow extends JFrame {
 		StatusBar statusBar = new StatusBar(_ctrl);
 		
 		JPanel centerPanel = new JPanel();
+		
+		//SEGÚN LA PRACTICA DEBE SER BoxLayout()
+		//PERO AL UTILIZARLO NO ME FUNCIONA BIEN
 		centerPanel.setLayout(new BorderLayout());
 		
 		
@@ -57,6 +60,4 @@ public class MainWindow extends JFrame {
 		
 				
 	}
-	
-	// Añade private/protected methods
 }

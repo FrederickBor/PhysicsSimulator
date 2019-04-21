@@ -269,6 +269,7 @@ public class Main {
 		final MainWindow v = new MainWindow(controller);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				v.pack();
 				v.setVisible(true);
 			}});
 	}

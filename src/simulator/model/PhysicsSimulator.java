@@ -25,7 +25,6 @@ public class PhysicsSimulator {
 	}
 
 	public void reset(){
-		this.dt = 0;
 		this.timeLapsed = 0;
 		this.bodies = new ArrayList<Body>();
 

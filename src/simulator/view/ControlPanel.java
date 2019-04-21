@@ -1,11 +1,5 @@
 package simulator.view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,25 +15,18 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SpringLayout;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.AbstractTableModel;
 
 import org.json.JSONObject;
 
 import simulator.control.Controller;
 import simulator.factories.Builder;
 import simulator.launcher.Main;
-import simulator.misc.Vector;
 import simulator.model.Body;
 import simulator.model.GravityLaws;
 import simulator.model.SimulatorObserver;
@@ -98,8 +83,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.addSeparator();
 		tb.add(exit);
 		
-		this.add(tb);
-		
+		add(tb);
 	}
 	
 	private JButton createLoadButton(){
@@ -202,10 +186,19 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 				play.setEnabled(false);
 				exit.setEnabled(false);
 				_stopped = false;
-				double dt =  Double.parseDouble(ControlPanel.this.deltaTime.getText());
-				_ctrl.setDeltaTime(dt);
-				int steps = (Integer) ControlPanel.this.steps.getValue();
+				int steps = 0;
+				try {
+					double dt =  Double.parseDouble(ControlPanel.this.deltaTime.getText());
+					_ctrl.setDeltaTime(dt);
+					steps = (Integer) ControlPanel.this.steps.getValue();
+					
+				} catch (Exception e) {
+					_stopped = true;
+					JOptionPane.showMessageDialog(ControlPanel.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+				
 				run_sim(steps);
+				
 			}
 		});
 		
@@ -305,14 +298,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	
 	@Override
 	public void onRegister(List<Body> bodies, double time, double dt, String gLawsDesc) {
-		// TODO Auto-generated method stub
-		
+		deltaTime.setText(Double.toString(dt));
 	}
 
 	@Override
 	public void onReset(List<Body> bodies, double time, double dt, String gLawsDesc) {
-		// TODO Auto-generated method stub
-		
+		deltaTime.setText(Double.toString(dt));
 	}
 
 	@Override
@@ -330,7 +321,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	@Override
 	public void onDeltaTimeChanged(double dt) {
 		// TODO Auto-generated method stub
-		
+		deltaTime.setText(Double.toString(dt));
 	}
 
 	@Override
