@@ -8,6 +8,7 @@ import javax.swing.table.AbstractTableModel;
 import simulator.control.Controller;
 import simulator.misc.Vector;
 
+@SuppressWarnings("serial")
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
 
 	private List<Body> _bodies;

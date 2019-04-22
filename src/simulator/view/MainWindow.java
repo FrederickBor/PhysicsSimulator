@@ -1,18 +1,16 @@
 package simulator.view;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Dimension;
 
-import javax.activation.MailcapCommandMap;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import simulator.control.Controller;
 
+@SuppressWarnings("serial")
 public class MainWindow extends JFrame {
-	// Añade atributos para todos los componentes (clases)
+	// Aï¿½ade atributos para todos los componentes (clases)
 	Controller _ctrl;
 	public static final int width = 1000;
 	public static final int height = 820;
@@ -28,7 +26,7 @@ public class MainWindow extends JFrame {
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		setContentPane(mainPanel);
 			
-		// Completa el método para construir la GUI
+		// Completa el mï¿½todo para construir la GUI
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		ControlPanel cPanel = new ControlPanel(_ctrl);
@@ -38,12 +36,12 @@ public class MainWindow extends JFrame {
 		
 		JPanel centerPanel = new JPanel();
 		
-		//SEGÚN LA PRACTICA DEBE SER BoxLayout()
+		//SEGï¿½N LA PRACTICA DEBE SER BoxLayout()
 		//PERO AL UTILIZARLO NO ME FUNCIONA BIEN
 		centerPanel.setLayout(new BorderLayout());
 		
 		
-		Dimension d1 = new Dimension(width,50);
+		Dimension d1 = new Dimension(width,55);
 		Dimension d2 = new Dimension(width,300);
 		Dimension d3 = new Dimension(width,400);
 		

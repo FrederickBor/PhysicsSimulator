@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 import simulator.control.Controller;
 import simulator.model.BodiesTableModel;
 
+@SuppressWarnings("serial")
 public class BodiesTable extends JPanel {
 	
 	public BodiesTable(Controller ctrl) {

@@ -1,5 +1,8 @@
 package simulator.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -15,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -31,6 +35,7 @@ import simulator.model.Body;
 import simulator.model.GravityLaws;
 import simulator.model.SimulatorObserver;
 
+@SuppressWarnings("serial")
 public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	private Controller _ctrl;
@@ -52,6 +57,10 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	}
 	
 	private void initGUI() {
+		
+		JPanel pnlPpalJPanel = new JPanel(new BorderLayout());
+		JPanel pnlIzqJPanel = new JPanel(new FlowLayout());
+		JPanel pnlDerJPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
 		tb = new JToolBar();
 		
@@ -81,9 +90,27 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.add(new JLabel("Delta-Time:"));
 		tb.add(deltaTime);
 		tb.addSeparator();
-		tb.add(exit);
+		//tb.add(exit);
 		
-		add(tb);
+		pnlDerJPanel.add(exit);	
+		pnlIzqJPanel.add(tb);
+//		pnlIzqJPanel.add(loadFiles);
+//		pnlIzqJPanel.add(new JSeparator());
+//		pnlIzqJPanel.add(selectGravityLaw);
+//		pnlIzqJPanel.add(new JSeparator());
+//		pnlIzqJPanel.add(play);
+//		pnlIzqJPanel.add(stop);
+//		pnlIzqJPanel.add(new JLabel("Steps:"));
+//		pnlIzqJPanel.add(steps);
+//		pnlIzqJPanel.add(new JLabel("Delta-Time:"));
+//		pnlIzqJPanel.add(deltaTime);
+//		pnlIzqJPanel.add(new JSeparator());
+		
+		//add(tb);
+		pnlPpalJPanel.add(pnlIzqJPanel, BorderLayout.WEST);
+		pnlPpalJPanel.add(pnlDerJPanel, BorderLayout.EAST);
+		
+		add(pnlPpalJPanel);
 	}
 	
 	private JButton createLoadButton(){

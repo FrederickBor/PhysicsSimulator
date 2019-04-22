@@ -21,6 +21,7 @@ import simulator.misc.Vector;
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
+@SuppressWarnings("serial")
 public class Viewer extends JComponent implements SimulatorObserver {
 
 	private int _centerX;
@@ -46,6 +47,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 		_bodies = new ArrayList<>();
 		_scale = 1.0;
 		_showHelp = true;
+		
 		addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -183,18 +185,21 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	public void onRegister(List<Body> bodies, double time, double dt, String gLawsDesc) {
 		_bodies = bodies;
 		autoScale();
+		repaint();
 	}
 
 	@Override
 	public void onReset(List<Body> bodies, double time, double dt, String gLawsDesc) {
 		_bodies = bodies;
 		autoScale();
+		repaint();
 	}
 
 	@Override
 	public void onBodyAdded(List<Body> bodies, Body b) {
 		_bodies = bodies;
 		autoScale();
+		repaint();
 	}
 
 	@Override

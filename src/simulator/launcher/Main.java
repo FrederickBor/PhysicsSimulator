@@ -62,7 +62,7 @@ public class Main {
 	public static List<Builder<Body>> _bodies;
 	public static List<Builder<GravityLaws>> _gravities;
 
-	protected static InputStream _in; // NO SE USA -> A ELIMINAR
+	protected static InputStream _in; // TODO NO SE USA -> A ELIMINAR
 
 	private static void init() {
 		// initialize the bodies factory
@@ -71,7 +71,7 @@ public class Main {
 		bodies.add(new BasicBodyBuilder());
 		bodies.add(new MassLossingBodyBuilder());
 
-		_bodies = bodies; // VER PARA QUE ES??? - ES UNA LISTA DE BUILDERS DE BODIES
+		_bodies = bodies; // TODO VER PARA QUE ES??? - ES UNA LISTA DE BUILDERS DE BODIES
 
 		_bodyFactory = new BuilderBasedFactory<Body>(_bodies); // FACTORÃ�A DE BODIES
 
@@ -150,7 +150,9 @@ public class Main {
 				.build());
 		
 		// mode
-		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg().desc("Execution Mode.").build());
+		cmdLineOptions.addOption(Option.builder("m").longOpt("mode").hasArg()
+				.desc("Execution Mode. Possible values: ’batch’(Batch mode), ’gui’ (Graphical User Interface mode). "
+						+ "Default value: 'batch'.").build());
 
 		// gravity laws -- there is a workaround to make it work even when
 		// _gravityLawsFactory is null.
@@ -185,8 +187,11 @@ public class Main {
 
 	private static void parseModeOption(CommandLine line) throws ParseException {
 		_mode = line.getOptionValue("m");
+		
 		if (_mode == null) {
-			throw new ParseException("A mode has to be specified");
+			_mode = "batch";
+			// EN REALIDAD POR DEFECTO DEBE SER BATCH MODE A NO SER QUE INDIQUEMOS LO CONTRARIO
+			//throw new ParseException("A mode has to be specified");
 		}
 	}
 
@@ -262,9 +267,10 @@ public class Main {
 		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
 		Controller controller = new Controller(ps, _bodyFactory,_gravityLawsFactory);
 		
-		if (_inFile == null) {
+		// AQUI ESTABA LA CAUSA DEL ERROR, ESTO NO ES NECESARIO EN MODO GUI, PORQUE SI ES NULL SALTA EXCEPTION
+		/*if (_inFile == null) {
 			controller.loadBodies(new FileInputStream(_inFile));
-		}
+		}*/
 
 		final MainWindow v = new MainWindow(controller);
 		SwingUtilities.invokeLater(new Runnable() {

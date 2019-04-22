@@ -15,6 +15,7 @@ import simulator.control.Controller;
 import simulator.model.Body;
 import simulator.model.SimulatorObserver;
 
+@SuppressWarnings("serial")
 public class StatusBar extends JPanel implements SimulatorObserver {
 	
 	private JLabel _currTime; // for current time
