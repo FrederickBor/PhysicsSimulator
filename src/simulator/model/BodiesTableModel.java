@@ -6,20 +6,20 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import simulator.control.Controller;
-import simulator.misc.Vector;
+//import simulator.misc.Vector;
 
 @SuppressWarnings("serial")
 public class BodiesTableModel extends AbstractTableModel implements SimulatorObserver {
 
 	private List<Body> _bodies;
 	private final String[] columnNames = { "Id", "Mass", "Position", "Velocity", "Acceleration" };
-	private final Class[] columnClasses = {
-			(new String()).getClass(),
-			(new Double(0)).getClass(),
-			(new Vector(2)).getClass(),
-			(new Vector(2)).getClass(),
-			(new Vector(2)).getClass()
-	};
+//	private final Class[] columnClasses = {
+//			(new String()).getClass(),
+//			(new Double(0)).getClass(),
+//			(new Vector(2)).getClass(),
+//			(new Vector(2)).getClass(),
+//			(new Vector(2)).getClass()
+//	};
 
 	public BodiesTableModel(Controller ctrl) {
 		_bodies = new ArrayList<>();

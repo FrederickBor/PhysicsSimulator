@@ -57,7 +57,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	private void initGUI() {
 		
 		JPanel pnlPpalJPanel = new JPanel(new GridLayout(1, 2));
-		JPanel pnlIzqJPanel = new JPanel(new FlowLayout());
 		JPanel pnlDerJPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
 		tb = new JToolBar();
@@ -90,9 +89,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.addSeparator();
 		
 		pnlDerJPanel.add(exit);	
-		pnlIzqJPanel.add(tb);
 
-		pnlPpalJPanel.add(pnlIzqJPanel);
+		pnlPpalJPanel.add(tb);
 		pnlPpalJPanel.add(pnlDerJPanel);
 		
 		add(pnlPpalJPanel);

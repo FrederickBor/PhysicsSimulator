@@ -276,6 +276,7 @@ public class Main {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				v.pack();
+				v.setLocationRelativeTo(null);
 				v.setVisible(true);
 			}});
 	}
