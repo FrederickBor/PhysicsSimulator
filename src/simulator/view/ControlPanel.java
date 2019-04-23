@@ -1,8 +1,7 @@
 package simulator.view;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -18,7 +17,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -58,7 +56,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	
 	private void initGUI() {
 		
-		JPanel pnlPpalJPanel = new JPanel(new BorderLayout());
+		JPanel pnlPpalJPanel = new JPanel(new GridLayout(1, 2));
 		JPanel pnlIzqJPanel = new JPanel(new FlowLayout());
 		JPanel pnlDerJPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
@@ -90,25 +88,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.add(new JLabel("Delta-Time:"));
 		tb.add(deltaTime);
 		tb.addSeparator();
-		//tb.add(exit);
 		
 		pnlDerJPanel.add(exit);	
 		pnlIzqJPanel.add(tb);
-//		pnlIzqJPanel.add(loadFiles);
-//		pnlIzqJPanel.add(new JSeparator());
-//		pnlIzqJPanel.add(selectGravityLaw);
-//		pnlIzqJPanel.add(new JSeparator());
-//		pnlIzqJPanel.add(play);
-//		pnlIzqJPanel.add(stop);
-//		pnlIzqJPanel.add(new JLabel("Steps:"));
-//		pnlIzqJPanel.add(steps);
-//		pnlIzqJPanel.add(new JLabel("Delta-Time:"));
-//		pnlIzqJPanel.add(deltaTime);
-//		pnlIzqJPanel.add(new JSeparator());
-		
-		//add(tb);
-		pnlPpalJPanel.add(pnlIzqJPanel, BorderLayout.WEST);
-		pnlPpalJPanel.add(pnlDerJPanel, BorderLayout.EAST);
+
+		pnlPpalJPanel.add(pnlIzqJPanel);
+		pnlPpalJPanel.add(pnlDerJPanel);
 		
 		add(pnlPpalJPanel);
 	}
@@ -276,7 +261,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	}
 	
 	private JSpinner createStepsSpinner(){
-		SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 9999999, 1);
+		SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 9999999, 100);
 		JSpinner spinner = new JSpinner(model);
 			
 		spinner.setValue(25000);

@@ -12,7 +12,7 @@ import simulator.control.Controller;
 public class MainWindow extends JFrame {
 	// A�ade atributos para todos los componentes (clases)
 	Controller _ctrl;
-	public static final int width = 1000;
+	public static final int width = 1100;
 	public static final int height = 820;
 
 	public MainWindow(Controller ctrl) {
