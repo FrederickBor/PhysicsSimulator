@@ -38,6 +38,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	private Controller _ctrl;
 	private boolean _stopped;
+	private JPanel pnlPpal;
+	private JPanel pnlDer;
 	private JToolBar tb;
 	private JButton loadFiles;
 	private JButton selectGravityLaw;
@@ -56,8 +58,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	
 	private void initGUI() {
 		
-		JPanel pnlPpalJPanel = new JPanel(new GridLayout(1, 2));
-		JPanel pnlDerJPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		pnlPpal = new JPanel(new GridLayout(1, 2));
+		pnlDer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
 		tb = new JToolBar();
 		
@@ -75,7 +77,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		deltaTime = createDeltaTimeField();
 		
 		// ADDING ALL COMPONENTS TO THE TOOLBAR
-		
 		tb.add(loadFiles);
 		tb.addSeparator();
 		tb.add(selectGravityLaw);
@@ -88,12 +89,13 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.add(deltaTime);
 		tb.addSeparator();
 		
-		pnlDerJPanel.add(exit);	
+		//Ensamblando todo
+		pnlDer.add(exit);	
 
-		pnlPpalJPanel.add(tb);
-		pnlPpalJPanel.add(pnlDerJPanel);
+		pnlPpal.add(tb);
+		pnlPpal.add(pnlDer);
 		
-		add(pnlPpalJPanel);
+		add(pnlPpal);
 	}
 	
 	private JButton createLoadButton(){

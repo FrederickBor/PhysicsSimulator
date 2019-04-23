@@ -24,6 +24,10 @@ public class PhysicsSimulator {
 		timeLapsed = 0;
 	}
 
+	/**
+	 * Vacía la lista de cuerpos y pone el tiempo a 0,0.
+	 * Además envía una notificación onReset a todos los observadores.
+	 */
 	public void reset(){
 		this.timeLapsed = 0;
 		this.bodies = new ArrayList<Body>();
@@ -33,6 +37,12 @@ public class PhysicsSimulator {
 		}
 	}
 
+	/**
+	 * Cambia el "Tiempo real por paso" (delta-time de aquí en adelante) a dt. 
+	 * Si dt tiene un valor no válido lanza una excepción de tipo IllegalArgumentException.
+	 * Además envía una notificación onDeltaTimeChanged a todos los observadores.
+	 * @param dt Nuevo tiempo real por paso a aplicar en la simulación.
+	 */
 	public void setDeltaTime(double dt){
 		if (dt <= 0) throw new IllegalArgumentException();
 
@@ -43,6 +53,12 @@ public class PhysicsSimulator {
 		}
 	}
 
+	/**
+	 * Cambia las leyes de gravedad del simulador a gravityLaws. 
+	 * Lanza una IllegalArgumentException si el valor no es válido, es decir, si es null.
+	 * Además envía una notificación onGravityLawsChanged a todos los observadores.
+	 * @param gl Las nuevas leyes de gravedad a aplicar en la simulación.
+	 */
 	public void setGravityLaws(GravityLaws gl){
 		if (gl == null) throw new IllegalArgumentException();
 
@@ -53,25 +69,25 @@ public class PhysicsSimulator {
 		}
 	}
 
-	public void addObserver(SimulatorObserver o){
-		boolean isOnList = false;
-
-		for (SimulatorObserver ob : observers){
-			if (ob == o){
-				isOnList = true;
-			}
-		}
-
-		if (!isOnList) {
-			o.onRegister(bodies, timeLapsed, dt, gl.toString());
+	/**
+	 * Añade o a la lista de observadores, si no está ya en ella. 
+	 * Además envía una notificación onRegister al observador que se acaba de registrar para pasarle el estado actual del simulador.
+	 * @param o Nuevo observador que queremos añadir.
+	 */
+	public void addObserver(SimulatorObserver o) {
+		if (!observers.contains(o)) {
 			observers.add(o);
+			o.onRegister(bodies, timeLapsed, dt, gl.toString());
 		}
 	}
+
 	
 	/**
-	 * A�ade el cuerpo b al simulador. El metodo comprueba que no existe ningun otro cuerpo con el mismo identificador. Si existiera, lanza una excepci�n del tipo IllegalArgumentException.
+	 * Añade el cuerpo b al simulador. 
+	 * El metodo comprueba que no existe ningun otro cuerpo con el mismo identificador. Si existiera, lanza una excepción del tipo IllegalArgumentException. 
+	 * Además envía una notificación onBodyAdded a todos los observadores.
 	 * 
-	 * @param b Cuerpo que vamos a a�adir a la simulaci�n.
+	 * @param b Cuerpo que vamos a añadir a la simulación.
 	 * @throws IllegalArgumentException En caso de que haya dos cuerpos con el mismo id.
 	 */
 	public void addBody(Body b) throws IllegalArgumentException {
@@ -89,7 +105,8 @@ public class PhysicsSimulator {
 	}
 	
 	/**
-	 * Aplica un paso de simulaci�n, i.e., primero llama al método apply de las leyes de la gravedad, después llama a move de cada cuerpo, donde dt es el tiempo real por paso, y finalmente incrementa el tiempo actual en dt segundos.
+	 * Aplica un paso de simulación, i.e., primero llama al método apply de las leyes de la gravedad, después llama a move de cada cuerpo, donde dt es el tiempo real por paso, y finalmente incrementa el tiempo actual en dt segundos.
+	 * Además envía una notificación onAdvance a todos los observadores.
 	 */
 	public void advance() {
 		gl.apply(bodies);

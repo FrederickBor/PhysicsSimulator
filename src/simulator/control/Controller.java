@@ -2,7 +2,6 @@ package simulator.control;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream.GetField;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -10,7 +9,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import simulator.factories.BuilderBasedFactory;
 import simulator.factories.Factory;
 import simulator.launcher.Main;
 import simulator.model.Body;
@@ -85,28 +83,51 @@ public class Controller {
 		if (p!=null) p.close();
 	}
 
+	/**
+	 * Invoca al método reset del simulador.
+	 */
 	public void reset(){
 		ps.reset();
 	}
 
+	/**
+	 * Invoca al método setDeltaTime del simulador.
+	 * @param dt "Tiempo real por paso" que le pasamos al método de PhysicsSimulator.
+	 */
 	public void setDeltaTime(double dt){
 		ps.setDeltaTime(dt);
 	}
 
+	/**
+	 * Invoca al método addObserver del simulador.
+	 * @param o Nuevo observador que queremos añadir y le pasamos al método de PhysicsSimulator.
+	 */
 	public void addObserver(SimulatorObserver o){
 		ps.addObserver(o);
 	}
 
+	/**
+	 * Ejecuta n pasos del simulador sin escribir nada en consola.
+	 * @param n Número de pasos que queremos que se ejecuten en la simulación.
+	 */
 	public void run(int n){
 		for (int i = 0; i<n; i++){
 			ps.advance();
 		}
 	}
 
+	/**
+	 * Devuelve la factoría de leyes de gravedad.
+	 * @return La factoría de leyes de gravedad que se va a usar en la simulación.
+	 */
 	public Factory<GravityLaws> getGravityLawsFactory(){
 		return gravityLawsFactory;
 	}
 
+	/**
+	 * Usa la factoría de leyes de gravedad actual para crear un nuevo objeto de tipo GravityLaws a partir de info y cambia las leyes de la gravedad del simulador por él.
+	 * @param info Estructura JSON que describe el objeto a crear.
+	 */
 	public void setGravityLaws(JSONObject info){
 		GravityLaws newGravityLaw = gravityLawsFactory.createInstance(info); 
 		ps.setGravityLaws(newGravityLaw);
