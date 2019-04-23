@@ -31,6 +31,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	private boolean _showHelp;
 	private String _helpText1 = "h: toggle help, +: zoom-in, -: zoom-out, =: fit";
 	private String _helpText2 = "Scaling ratio: ";
+	private boolean first = true;
 	
 	public Viewer(Controller ctrl) {
 		initGUI();
@@ -151,7 +152,10 @@ public class Viewer extends JComponent implements SimulatorObserver {
 			gr.drawString(body.getId(), circleX - (int) (body.getId().length()/2), circleY - gr.getFontMetrics().getAscent());
 			
 		}
-		
+		if (first) {
+			autoScale();
+			first = false;
+		}
 		repaint();
 	}
 	

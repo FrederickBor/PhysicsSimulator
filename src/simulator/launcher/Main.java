@@ -271,6 +271,9 @@ public class Main {
 		/*if (_inFile == null) {
 			controller.loadBodies(new FileInputStream(_inFile));
 		}*/
+		
+		if (_inFile != null)
+			controller.loadBodies(new FileInputStream(_inFile));
 
 		final MainWindow v = new MainWindow(controller);
 		SwingUtilities.invokeLater(new Runnable() {
