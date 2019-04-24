@@ -21,8 +21,10 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	private JLabel _currTime; // for current time
 	private JLabel _currLaws; // for gravity laws
 	private JLabel _numOfBodies; // for number of bodies
+	private Integer numBodInteger;
 
 	StatusBar(Controller ctrl) {
+		numBodInteger = ctrl.getBodiesQuantity();
 		initGUI();
 		ctrl.addObserver(this);
 	}
@@ -30,10 +32,10 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 	private void initGUI() {
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setBorder(BorderFactory.createBevelBorder(1));
-		
+				
 		_currTime = new JLabel("0.0");
-		_numOfBodies = new JLabel("0.0");
-		_currLaws = new JLabel("");
+		_numOfBodies = new JLabel(numBodInteger.toString());
+		_currLaws = new JLabel("Newton's Law of Universal Gravitation (nlug)");
 		
 		addTime();
 		addBodies();

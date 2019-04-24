@@ -268,11 +268,6 @@ public class Main {
 		PhysicsSimulator ps = new PhysicsSimulator(gl, _dtime);
 		Controller controller = new Controller(ps, _bodyFactory,_gravityLawsFactory);
 		
-		// AQUI ESTABA LA CAUSA DEL ERROR, ESTO NO ES NECESARIO EN MODO GUI, PORQUE SI ES NULL SALTA EXCEPTION
-		/*if (_inFile == null) {
-			controller.loadBodies(new FileInputStream(_inFile));
-		}*/
-		
 		if (_inFile != null)
 			controller.loadBodies(new FileInputStream(_inFile));
 

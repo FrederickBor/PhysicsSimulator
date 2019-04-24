@@ -23,7 +23,6 @@ import simulator.model.SimulatorObserver;
 
 @SuppressWarnings("serial")
 public class Viewer extends JComponent implements SimulatorObserver {
-
 	private int _centerX;
 	private int _centerY;
 	private double _scale;
@@ -39,7 +38,7 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	}
 
 	private void initGUI() {
-
+		//Border with title
 		setBorder(BorderFactory.createTitledBorder(
 				BorderFactory.createLineBorder(Color.black, 2),
 				"Viewer",
@@ -142,8 +141,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
 		for (Body body : _bodies) {
 			double x = body.getPosition().coordinate(0);
 			double y = body.getPosition().coordinate(1);
-			int circleX = _centerX + (int) (x/_scale) - radio;
-			int circleY = _centerY - (int) (y/_scale) - radio;
+			int circleX = _centerX + (int) (x/_scale);
+			int circleY = _centerY - (int) (y/_scale);
 			
 			gr.setColor(Color.BLUE);
 			gr.fillOval(circleX, circleY, diametro, diametro);
@@ -152,10 +151,12 @@ public class Viewer extends JComponent implements SimulatorObserver {
 			gr.drawString(body.getId(), circleX - (int) (body.getId().length()/2), circleY - gr.getFontMetrics().getAscent());
 			
 		}
+		
 		if (first) {
 			autoScale();
 			first = false;
 		}
+		
 		repaint();
 	}
 	
