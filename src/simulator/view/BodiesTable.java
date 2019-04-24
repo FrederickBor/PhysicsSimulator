@@ -22,7 +22,6 @@ public class BodiesTable extends JPanel {
 				"Bodies",
 				TitledBorder.LEFT, TitledBorder.TOP));
 		
-		// TODO complete
 		BodiesTableModel tableModel = new BodiesTableModel(ctrl) ;
 		JTable bodiesTable = new JTable(tableModel);
 		

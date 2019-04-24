@@ -208,6 +208,7 @@ public class Main {
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
 		String dt = line.getOptionValue("dt", _dtimeDefaultValue.toString());
+		
 		try {
 			_dtime = Double.parseDouble(dt);
 			assert (_dtime > 0);
@@ -289,7 +290,6 @@ public class Main {
 		if (_mode.toUpperCase().equals("BATCH")) {
 			startBatchMode();
 		} else {
-			System.out.println("ENTRO");
 			startGUIMode();
 		}
 	}

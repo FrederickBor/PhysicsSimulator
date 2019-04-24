@@ -35,6 +35,9 @@ import simulator.model.SimulatorObserver;
 
 @SuppressWarnings("serial")
 public class ControlPanel extends JPanel implements SimulatorObserver {
+	
+	private final static Double DT_DEFAULT_VALUE = 2500.0;
+	private final static Integer STEPS_DEFAULT_VALUE = 150;
 
 	private Controller _ctrl;
 	private boolean _stopped;
@@ -95,7 +98,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		pnlPpal.add(tb);
 		pnlPpal.add(pnlDer);
 		
-		add(pnlPpal);
+		this.add(pnlPpal);
 	}
 	
 	private JButton createLoadButton(){
@@ -107,7 +110,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		
 		JFileChooser fc = new JFileChooser();
 		fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-		fc.setMultiSelectionEnabled(true);
+		fc.setMultiSelectionEnabled(false);
 		fc.setFileFilter(new FileNameExtensionFilter("Text files", "json", "txt"));
 		
 		
@@ -121,15 +124,17 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 					try {
 						_ctrl.loadBodies(new FileInputStream(filePath));
 					} catch (FileNotFoundException e) {
-						System.err.println("Something went wrong by loading " + filePath);
+						JOptionPane.showMessageDialog(ControlPanel.this, "Something went wrong by loading " + filePath,
+								"Load Error", JOptionPane.ERROR_MESSAGE);
 					}
 				} 
 				else if (ret == JFileChooser.CANCEL_OPTION) {
-					JOptionPane.showMessageDialog(ControlPanel.this, "Se ha pulsado cancelar.");
+					JOptionPane.showMessageDialog(ControlPanel.this, "Cancel was pressed.", "Load file", 
+							JOptionPane.INFORMATION_MESSAGE);
 				} 
 				else {
-					
-					JOptionPane.showMessageDialog(ControlPanel.this, "An error has occured.");
+					JOptionPane.showMessageDialog(ControlPanel.this, "An error has occured trying to load the file.", 
+							"Load Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -175,7 +180,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 						}
 					}
 				} catch (Exception e) {
-					System.err.println("Something happens trying to load the Gravity Law");
+					JOptionPane.showMessageDialog(ControlPanel.this, "Something happens trying to load the Gravity Law",
+							"Load Gravity Law Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -206,7 +212,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 					
 				} catch (Exception e) {
 					_stopped = true;
-					JOptionPane.showMessageDialog(ControlPanel.this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(ControlPanel.this, e.getMessage(), "Error Loading Steps", JOptionPane.ERROR_MESSAGE);
 				}
 				
 				run_sim(steps);
@@ -243,12 +249,12 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				int optionType = JOptionPane.DEFAULT_OPTION;
-				int messageType = JOptionPane.INFORMATION_MESSAGE;
+				int messageType = JOptionPane.QUESTION_MESSAGE;
 				String[] textoBotones = { "Yes", "No"};
 				int res = JOptionPane.showOptionDialog(
 						ControlPanel.this,
 						"Are you sure you want to quit?",
-						"Confirm Dialog", optionType, messageType, null,
+						"Exit Confirm Dialog", optionType, messageType, null,
 						textoBotones, textoBotones[0]);
 				
 				if (res == 0) {
@@ -264,13 +270,13 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 9999999, 100);
 		JSpinner spinner = new JSpinner(model);
 			
-		spinner.setValue(25000);
+		spinner.setValue(STEPS_DEFAULT_VALUE);
 		
 		return spinner;
 	}
 	
 	private JTextField createDeltaTimeField() {
-		JTextField txtField = new JTextField("10000.0");
+		JTextField txtField = new JTextField(DT_DEFAULT_VALUE.toString());
 		
 		return txtField;
 	}
@@ -319,27 +325,20 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	}
 
 	@Override
-	public void onBodyAdded(List<Body> bodies, Body b) {
-		// TODO Auto-generated method stub
-		
+	public void onBodyAdded(List<Body> bodies, Body b) {		
 	}
 
 	@Override
-	public void onAdvance(List<Body> bodies, double time) {
-		// TODO Auto-generated method stub
-		
+	public void onAdvance(List<Body> bodies, double time) {		
 	}
 
 	@Override
 	public void onDeltaTimeChanged(double dt) {
-		// TODO Auto-generated method stub
 		deltaTime.setText(Double.toString(dt));
 	}
 
 	@Override
-	public void onGravityLawChanged(String gLawsDesc) {
-		// TODO Auto-generated method stub
-		
+	public void onGravityLawChanged(String gLawsDesc) {		
 	}
 	
 }
