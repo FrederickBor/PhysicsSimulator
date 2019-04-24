@@ -31,6 +31,8 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	private String _helpText1 = "h: toggle help, +: zoom-in, -: zoom-out, =: fit";
 	private String _helpText2 = "Scaling ratio: ";
 	private boolean first = true;
+	private static final int RADIO = 5;
+	private static final int DIAMETRO = RADIO*2;
 	
 	public Viewer(Controller ctrl) {
 		initGUI();
@@ -135,17 +137,16 @@ public class Viewer extends JComponent implements SimulatorObserver {
 	
 	private void drawBodies(Graphics2D gr) {
 		
-		int radio = 5;
-		int diametro = radio*2;
-		
 		for (Body body : _bodies) {
 			double x = body.getPosition().coordinate(0);
 			double y = body.getPosition().coordinate(1);
-			int circleX = _centerX + (int) (x/_scale);
-			int circleY = _centerY - (int) (y/_scale);
+			//NOTA: Le resto el radio para centrarlo todo,
+			// porque queda movido al pintar los cuerpos.
+			int circleX = _centerX + (int) (x/_scale) - RADIO;
+			int circleY = _centerY - (int) (y/_scale) - RADIO;
 			
 			gr.setColor(Color.BLUE);
-			gr.fillOval(circleX, circleY, diametro, diametro);
+			gr.fillOval(circleX, circleY, DIAMETRO, DIAMETRO);
 			
 			gr.setColor(Color.BLACK);
 			gr.drawString(body.getId(), circleX - (int) (body.getId().length()/2), circleY - gr.getFontMetrics().getAscent());
