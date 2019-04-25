@@ -1,7 +1,6 @@
 package simulator.view;
 
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -17,6 +16,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -35,11 +35,11 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	private final static Double DT_DEFAULT_VALUE = 2500.0;
 	private final static Integer STEPS_DEFAULT_VALUE = 150;
+	private static final int MAIN_WINDOW_WIDTH = 1100;
+
 
 	private Controller _ctrl;
 	private boolean _stopped;
-	private JPanel pnlPpal;
-	private JPanel pnlDer;
 	private JToolBar tb;
 	private JButton loadFiles;
 	private JButton selectGravityLaw;
@@ -57,9 +57,6 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	}
 
 	private void initGUI() {
-
-		pnlPpal = new JPanel(new GridLayout(1, 2));
-		pnlDer = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
 		tb = new JToolBar();
 
@@ -88,14 +85,18 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.add(new JLabel("Delta-Time:"));
 		tb.add(deltaTime);
 		tb.addSeparator();
+		
+		Dimension d1 = new Dimension(tb.getPreferredSize());
+		Dimension d2 = new Dimension(exit.getPreferredSize());
+		Dimension d3 = new Dimension(MAIN_WINDOW_WIDTH - d1.width - d2.width, 50);
+		
+		JSeparator js = new JSeparator(JSeparator.VERTICAL);
+		js.setPreferredSize(d3);
+		
+		tb.add(js);
+		tb.add(exit);
 
-		//Ensamblando todo
-		pnlDer.add(exit);	
-
-		pnlPpal.add(tb);
-		pnlPpal.add(pnlDer);
-
-		this.add(pnlPpal);
+		this.add(tb);
 	}
 
 	private JButton createLoadButton(){
