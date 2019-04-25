@@ -2,7 +2,6 @@ package simulator.launcher;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +44,8 @@ import simulator.view.MainWindow;
 public class Main {
 
 	// default values for some parameters
-	private final static Double _dtimeDefaultValue = 2500.0;
-	private final static Integer _stepsDefaultValue = 150;
+	private final static Double DT_DEFAULT_VALUE = 2500.0;
+	private final static Integer STEPS_DEFAULT_VALUE = 150;
 
 	// some attributes to stores values corresponding to command-line parameters
 	private static Double _dtime = null;
@@ -59,10 +58,14 @@ public class Main {
 	// factories
 	private static Factory<Body> _bodyFactory;
 	private static Factory<GravityLaws> _gravityLawsFactory;
-	public static List<Builder<Body>> _bodies;
-	public static List<Builder<GravityLaws>> _gravities;
 
-	protected static InputStream _in; // TODO NO SE USA -> A ELIMINAR
+	private static void parseHelpOption(CommandLine line, Options cmdLineOptions) {
+		if (line.hasOption("h")) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
+			System.exit(0);
+		}
+	}
 
 	private static void init() {
 		// initialize the bodies factory
@@ -71,9 +74,7 @@ public class Main {
 		bodies.add(new BasicBodyBuilder());
 		bodies.add(new MassLossingBodyBuilder());
 
-		_bodies = bodies; // TODO VER PARA QUE ES??? - ES UNA LISTA DE BUILDERS DE BODIES
-
-		_bodyFactory = new BuilderBasedFactory<Body>(_bodies); // FACTORÃ�A DE BODIES
+		_bodyFactory = new BuilderBasedFactory<Body>(bodies); // FACTORIA DE BODIES
 
 		// initialize the gravity laws factory
 
@@ -82,9 +83,7 @@ public class Main {
 		gravities.add(new FallingToCenterGravityBuilder());
 		gravities.add(new NoGravityBuilder());
 
-		_gravities = gravities; // LISTA DE BUILDERS DE GL
-
-		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities); // FACTORÃ�A DE GL
+		_gravityLawsFactory = new BuilderBasedFactory<GravityLaws>(gravities); // FACTORIA DE GL
 	}
 
 	private static void parseArgs(String[] args) {
@@ -140,13 +139,13 @@ public class Main {
 
 		// Steps
 		cmdLineOptions.addOption(Option.builder("s").longOpt("steps").hasArg().desc(
-				"An integer representing the number of simulation steps. Default value: " + _stepsDefaultValue + ".")
+				"An integer representing the number of simulation steps. Default value: " + STEPS_DEFAULT_VALUE + ".")
 				.build());
 
 		// delta-time
 		cmdLineOptions.addOption(Option.builder("dt").longOpt("delta-time").hasArg()
 				.desc("A double representing actual time, in seconds, per simulation step. Default value: "
-						+ _dtimeDefaultValue + ".")
+						+ DT_DEFAULT_VALUE + ".")
 				.build());
 		
 		// mode
@@ -177,14 +176,6 @@ public class Main {
 		return cmdLineOptions;
 	}
 
-	private static void parseHelpOption(CommandLine line, Options cmdLineOptions) {
-		if (line.hasOption("h")) {
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp(Main.class.getCanonicalName(), cmdLineOptions, true);
-			System.exit(0);
-		}
-	}
-
 	private static void parseModeOption(CommandLine line) throws ParseException {
 		_mode = line.getOptionValue("m");
 		
@@ -207,7 +198,7 @@ public class Main {
 	}
 
 	private static void parseDeltaTimeOption(CommandLine line) throws ParseException {
-		String dt = line.getOptionValue("dt", _dtimeDefaultValue.toString());
+		String dt = line.getOptionValue("dt", DT_DEFAULT_VALUE.toString());
 		
 		try {
 			_dtime = Double.parseDouble(dt);
@@ -218,7 +209,7 @@ public class Main {
 	}
 
 	private static void parseStepsOption(CommandLine line) throws ParseException {
-		String s = line.getOptionValue("s", _stepsDefaultValue.toString());
+		String s = line.getOptionValue("s", STEPS_DEFAULT_VALUE.toString());
 		try {
 			_steps = Integer.parseInt(s);
 			assert (_steps > 0);
