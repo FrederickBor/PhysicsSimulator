@@ -68,6 +68,10 @@ public class PhysicsSimulator {
 			ob.onGravityLawChanged(gl.toString());
 		}
 	}
+	
+	public String getGravityLaws() {
+		return this.gl.toString();
+	}
 
 	/**
 	 * Añade o a la lista de observadores, si no está ya en ella. 

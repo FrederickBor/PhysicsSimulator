@@ -8,12 +8,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import simulator.control.Controller;
+import simulator.view.StatusBar;;
 
 @SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 	// Añade atributos para todos los componentes (clases)
 	Controller _ctrl;
-	public static final int WIDTH = 1080;
+	public static final int WIDTH = 1085;
 	public static final int HEIGHT = 820;
 	
 	ControlPanel cPanel;

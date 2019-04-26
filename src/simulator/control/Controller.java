@@ -137,4 +137,8 @@ public class Controller {
 		return ps.getBodiesQuantity();
 	}
 	
+	public String getCurrentActiveGL() {
+		return ps.getGravityLaws();
+	}
+	
 }
