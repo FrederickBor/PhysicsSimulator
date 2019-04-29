@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import simulator.control.Controller;
 import simulator.model.Body;
@@ -81,21 +82,39 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 
 	@Override
 	public void onReset(List<Body> bodies, double time, double dt, String gLawsDesc) {
-		_currTime.setText("0.0");
-		_currLaws.setText(gLawsDesc);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				_currTime.setText("0.0");
+				_currLaws.setText(gLawsDesc);
+			}
+		});
 		this.repaint();
 	}
 
 	@Override
 	public void onBodyAdded(List<Body> bodies, Body b) {
-		int numBodies = bodies.size();
-		_numOfBodies.setText(Integer.toString(numBodies));
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				int numBodies = bodies.size();
+				_numOfBodies.setText(Integer.toString(numBodies));
+			}
+		});
 		this.repaint();
 	}
 
 	@Override
 	public void onAdvance(List<Body> bodies, double time) {
-		_currTime.setText(Double.toString(time));
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				_currTime.setText(Double.toString(time));				
+			}
+		});
 		this.repaint();
 	}
 
@@ -106,7 +125,13 @@ public class StatusBar extends JPanel implements SimulatorObserver {
 
 	@Override
 	public void onGravityLawChanged(String gLawsDesc) {
-		_currLaws.setText(gLawsDesc);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				_currLaws.setText(gLawsDesc);				
+			}
+		});
 		this.repaint();
 	}
 }

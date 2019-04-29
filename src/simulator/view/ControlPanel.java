@@ -37,9 +37,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	private final static Integer STEPS_DEFAULT_VALUE = 150;
 	private static final int MAIN_WINDOW_WIDTH = 1100;
 
-
 	private Controller _ctrl;
-	private boolean _stopped;
 	private JToolBar tb;
 	private JButton loadFiles;
 	private JButton selectGravityLaw;
@@ -49,9 +47,11 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	private JSpinner steps;
 	private JTextField deltaTime;
 
+	private JSpinner delay;
+	private volatile Thread _thread;
+
 	ControlPanel(Controller ctrl) {
 		_ctrl = ctrl;
-		_stopped = true;
 		initGUI();
 		_ctrl.addObserver(this);
 	}
@@ -69,6 +69,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 		//JSPINNER
 		steps = createStepsSpinner();
+		delay = createDelaySpinner();
 
 		//JTEXTFIELD
 		deltaTime = createDeltaTimeField();
@@ -80,19 +81,21 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.addSeparator();
 		tb.add(play);
 		tb.add(stop);
-		tb.add(new JLabel("Steps:"));
+		tb.add(new JLabel(" Delay: "));
+		tb.add(delay);
+		tb.add(new JLabel(" Steps: "));
 		tb.add(steps);
-		tb.add(new JLabel("Delta-Time:"));
+		tb.add(new JLabel(" Delta-Time: "));
 		tb.add(deltaTime);
 		tb.addSeparator();
-		
+
 		Dimension d1 = new Dimension(tb.getPreferredSize());
 		Dimension d2 = new Dimension(exit.getPreferredSize());
 		Dimension d3 = new Dimension(MAIN_WINDOW_WIDTH - d1.width - d2.width, 50);
-		
+
 		JSeparator js = new JSeparator(JSeparator.VERTICAL);
 		js.setPreferredSize(d3);
-		
+
 		tb.add(js);
 		tb.add(exit);
 
@@ -164,18 +167,18 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 						"Select gravity laws to be used", "Gravity Laws Selector",
 						JOptionPane.QUESTION_MESSAGE, icon, values, values[0]);
 
-					String glText = seleccion.toString().split("\\(")[1].split("\\)")[0];
-					
-					int i = 0;
-					for (JSONObject jo: gravityLawsList) { 
-						if (glText.equals(jo.getString("type"))) {
-							_ctrl.setGravityLaws(_ctrl.getGravityLawsFactory().getInfo().get(i)); } 
-						i++;
-					}
+				String glText = seleccion.toString().split("\\(")[1].split("\\)")[0];
+
+				int i = 0;
+				for (JSONObject jo: gravityLawsList) { 
+					if (glText.equals(jo.getString("type"))) {
+						_ctrl.setGravityLaws(_ctrl.getGravityLawsFactory().getInfo().get(i)); } 
+					i++;
+				}
 				} catch (Exception e) { 
 					JOptionPane.showMessageDialog(ControlPanel.this,
-						"Something happens trying to load the Gravity Law", "Load Gravity Law Error",
-						JOptionPane.ERROR_MESSAGE); 
+							"Something happens trying to load the Gravity Law", "Load Gravity Law Error",
+							JOptionPane.ERROR_MESSAGE); 
 				}
 
 			}
@@ -193,27 +196,33 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				play.setEnabled(false);
-				loadFiles.setEnabled(false);
-				selectGravityLaw.setEnabled(false);
-				play.setEnabled(false);
-				exit.setEnabled(false);
-				_stopped = false;
-				int steps = 0;
-				try {
-					double dt =  Double.parseDouble(ControlPanel.this.deltaTime.getText());
-					_ctrl.setDeltaTime(dt);
-					steps = (Integer) ControlPanel.this.steps.getValue();
+				disableButtons();
 
-				} catch (Exception e) {
-					_stopped = true;
-					JOptionPane.showMessageDialog(ControlPanel.this, e.getMessage(), "Error Loading Steps", JOptionPane.ERROR_MESSAGE);
-				}
+				_thread = new Thread(new Runnable() {
 
-				run_sim(steps);
+					@Override
+					public void run() {
+						int stepsLocal = 0;
+						int delayLocal = 0;
+						try {
+							double dt =  Double.parseDouble(ControlPanel.this.deltaTime.getText());
+							_ctrl.setDeltaTime(dt);
+							stepsLocal = (Integer) ControlPanel.this.steps.getValue();
+							delayLocal = (Integer) ControlPanel.this.delay.getValue();
+							run_sim(stepsLocal, delayLocal);
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(ControlPanel.this, e.getMessage(), "Error Loading Steps", JOptionPane.ERROR_MESSAGE);
+						}
 
+						enableButtons();
+					}
+				});
+				
+				_thread.start();
 			}
 		});
+		
+		_thread = null;
 
 		return btn;
 	}
@@ -227,7 +236,9 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				_stopped = true;
+				if (_thread != null)
+					_thread.interrupt();
+				enableButtons();
 			}
 		});
 
@@ -270,53 +281,79 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		return spinner;
 	}
 
+	private JSpinner createDelaySpinner(){
+		SpinnerNumberModel model = new SpinnerNumberModel(1, 0, 1000, 1);
+		JSpinner spinner = new JSpinner(model);
+
+		return spinner;
+	}
+
 	private JTextField createDeltaTimeField() {
 		JTextField txtField = new JTextField(DT_DEFAULT_VALUE.toString());
 
 		return txtField;
 	}
 
-	private void run_sim(int n) {
-		if (n > 0 && !_stopped) {
+	private void run_sim(int n, long d) {
+
+		while (n > 0 && !_thread.isInterrupted()) {
 			try {
 				_ctrl.run(1);
+				Thread.sleep(d);
+				n--;
 			} catch (Exception e) {
 
-				int messageType = JOptionPane.ERROR_MESSAGE;
-				JOptionPane.showMessageDialog(ControlPanel.this, e.toString(), "Error Message", messageType);
+				SwingUtilities.invokeLater(new Runnable() {
 
-				play.setEnabled(true);
-				loadFiles.setEnabled(true);
-				selectGravityLaw.setEnabled(true);
-				play.setEnabled(true);
-				exit.setEnabled(true);
-				_stopped = true;
+					@Override
+					public void run() {
+						int messageType = JOptionPane.ERROR_MESSAGE;
+						JOptionPane.showMessageDialog(ControlPanel.this, e.toString(), "Error Message", messageType);						
+					}
+				});
+
+				enableButtons();
 				return;
 			}
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					run_sim(n - 1);
-				}
-			});
-		} else {
-			_stopped = true;
-			play.setEnabled(true);
-			loadFiles.setEnabled(true);
-			selectGravityLaw.setEnabled(true);
-			play.setEnabled(true);
-			exit.setEnabled(true);
 		}
+	}
+
+	private void enableButtons() {
+		play.setEnabled(true);
+		loadFiles.setEnabled(true);
+		selectGravityLaw.setEnabled(true);
+		play.setEnabled(true);
+		exit.setEnabled(true);
+	}
+
+	private void disableButtons() {
+		play.setEnabled(false);
+		loadFiles.setEnabled(false);
+		selectGravityLaw.setEnabled(false);
+		play.setEnabled(false);
+		exit.setEnabled(false);
 	}
 
 	@Override
 	public void onRegister(List<Body> bodies, double time, double dt, String gLawsDesc) {
-		deltaTime.setText(Double.toString(dt));
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				deltaTime.setText(Double.toString(dt));		
+			}
+		});
 	}
 
 	@Override
 	public void onReset(List<Body> bodies, double time, double dt, String gLawsDesc) {
-		deltaTime.setText(Double.toString(dt));
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				deltaTime.setText(Double.toString(dt));		
+			}
+		});	
 	}
 
 	@Override
@@ -329,7 +366,13 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	@Override
 	public void onDeltaTimeChanged(double dt) {
-		deltaTime.setText(Double.toString(dt));
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				deltaTime.setText(Double.toString(dt));		
+			}
+		});
 	}
 
 	@Override

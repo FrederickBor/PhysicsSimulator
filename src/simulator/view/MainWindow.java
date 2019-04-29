@@ -46,7 +46,7 @@ public class MainWindow extends JFrame {
 		
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		
-		cPanel.setPreferredSize(new Dimension(WIDTH,55));
+		cPanel.setPreferredSize(new Dimension(WIDTH,60));
 		bPanel.setPreferredSize(new Dimension(WIDTH,300));
 		vPanel.setPreferredSize(new Dimension(WIDTH,400));
 		
