@@ -211,7 +211,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 							delayLocal = (Integer) ControlPanel.this.delay.getValue();
 							run_sim(stepsLocal, delayLocal);
 						} catch (Exception e) {
-							JOptionPane.showMessageDialog(ControlPanel.this, "Something went wrong loading some values (delay/steps/delta-time).",
+							JOptionPane.showMessageDialog(ControlPanel.this, 
+									"Something went wrong loading some values (delay/steps/delta-time).",
 									"Error Loading Parameters.", JOptionPane.ERROR_MESSAGE);
 						}
 
@@ -309,7 +310,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 					@Override
 					public void run() {
 						int messageType = JOptionPane.INFORMATION_MESSAGE;
-						JOptionPane.showMessageDialog(ControlPanel.this, "You have stopped the simulator.", "Simulation stopped", messageType);						
+						JOptionPane.showMessageDialog(ControlPanel.this, 
+								"You have stopped the simulator.", "Simulation stopped", messageType);						
 					}
 				});
 
