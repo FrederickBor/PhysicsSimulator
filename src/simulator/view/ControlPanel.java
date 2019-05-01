@@ -35,7 +35,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	private final static Double DT_DEFAULT_VALUE = 2500.0;
 	private final static Integer STEPS_DEFAULT_VALUE = 150;
-	private static final int MAIN_WINDOW_WIDTH = 1100;
+	private static final int MAIN_WINDOW_WIDTH = 1085;
 
 	private Controller _ctrl;
 	private JToolBar tb;
@@ -87,16 +87,17 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		tb.add(steps);
 		tb.add(new JLabel(" Delta-Time: "));
 		tb.add(deltaTime);
-		tb.addSeparator();
 
 		Dimension d1 = new Dimension(tb.getPreferredSize());
 		Dimension d2 = new Dimension(exit.getPreferredSize());
 		Dimension d3 = new Dimension(MAIN_WINDOW_WIDTH - d1.width - d2.width, 50);
+		
+		tb.addSeparator(d3);
 
 		JSeparator js = new JSeparator(JSeparator.VERTICAL);
-		js.setPreferredSize(d3);
-
 		tb.add(js);
+		tb.addSeparator();
+		
 		tb.add(exit);
 
 		this.add(tb);
