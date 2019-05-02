@@ -22,6 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.json.JSONObject;
@@ -48,7 +49,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 	private JTextField deltaTime;
 
 	private JSpinner delay;
-	private volatile Thread _thread;
+	SimulatorWorker simWorker;
+	
 
 	ControlPanel(Controller ctrl) {
 		_ctrl = ctrl;
@@ -198,34 +200,10 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				disableButtons();
-
-				_thread = new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						int stepsLocal = 0;
-						int delayLocal = 0;
-						try {
-							double dt =  Double.parseDouble(ControlPanel.this.deltaTime.getText());
-							_ctrl.setDeltaTime(dt);
-							stepsLocal = (Integer) ControlPanel.this.steps.getValue();
-							delayLocal = (Integer) ControlPanel.this.delay.getValue();
-							run_sim(stepsLocal, delayLocal);
-						} catch (Exception e) {
-							JOptionPane.showMessageDialog(ControlPanel.this, 
-									"Something went wrong loading some values (delay/steps/delta-time).",
-									"Error Loading Parameters.", JOptionPane.ERROR_MESSAGE);
-						}
-
-						enableButtons();
-					}
-				});
-				
-				_thread.start();
+				simWorker = new SimulatorWorker();
+				simWorker.execute();
 			}
 		});
-		
-		_thread = null;
 
 		return btn;
 	}
@@ -239,8 +217,8 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				if (_thread != null)
-					_thread.interrupt();
+				if (simWorker != null)
+					simWorker.cancel(true);
 				enableButtons();
 			}
 		});
@@ -299,7 +277,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	private void run_sim(int n, long d) {
 
-		while (n > 0 && !_thread.isInterrupted()) {
+		while (n > 0 && !simWorker.isCancelled()) {
 			try {
 				_ctrl.run(1);
 				Thread.sleep(d);
@@ -381,6 +359,34 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 	@Override
 	public void onGravityLawChanged(String gLawsDesc) {		
+	}
+	
+	public class SimulatorWorker extends SwingWorker<Void, Void> {
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			int stepsLocal = 0;
+			int delayLocal = 0;
+			try {
+				double dt =  Double.parseDouble(ControlPanel.this.deltaTime.getText());
+				_ctrl.setDeltaTime(dt);
+				stepsLocal = (Integer) ControlPanel.this.steps.getValue();
+				delayLocal = (Integer) ControlPanel.this.delay.getValue();
+				run_sim(stepsLocal, delayLocal);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(ControlPanel.this, 
+						"Something went wrong loading some values (delay/steps/delta-time).",
+						"Error Loading Parameters.", JOptionPane.ERROR_MESSAGE);
+			}
+
+			return null;
+		}
+		
+		@Override
+		protected void done() {
+			enableButtons();
+		}
+		
 	}
 
 }
