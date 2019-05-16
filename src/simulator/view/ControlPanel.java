@@ -128,16 +128,16 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 					try {
 						_ctrl.loadBodies(new FileInputStream(filePath));
 					} catch (FileNotFoundException e) {
-						JOptionPane.showMessageDialog(ControlPanel.this, "Something went wrong by loading " + filePath,
+						JOptionPane.showMessageDialog(null, "Something went wrong by loading " + filePath,
 								"Load Error", JOptionPane.ERROR_MESSAGE);
 					}
 				} 
 				else if (ret == JFileChooser.CANCEL_OPTION) {
-					JOptionPane.showMessageDialog(ControlPanel.this, "Cancel was pressed.", "Load file", 
+					JOptionPane.showMessageDialog(null, "Cancel was pressed.", "Load file", 
 							JOptionPane.INFORMATION_MESSAGE);
 				} 
 				else {
-					JOptionPane.showMessageDialog(ControlPanel.this, "An error has occured trying to load the file.", 
+					JOptionPane.showMessageDialog(null, "An error has occured trying to load the file.", 
 							"Load Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -166,7 +166,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 
 				Object[] values = valuesList.toArray();
 
-				try { Object seleccion = JOptionPane.showInputDialog( ControlPanel.this,
+				try { Object seleccion = JOptionPane.showInputDialog(null,
 						"Select gravity laws to be used", "Gravity Laws Selector",
 						JOptionPane.QUESTION_MESSAGE, icon, values, values[0]);
 
@@ -179,7 +179,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 					i++;
 				}
 				} catch (Exception e) { 
-					JOptionPane.showMessageDialog(ControlPanel.this,
+					JOptionPane.showMessageDialog(null,
 							"Something happens trying to load the Gravity Law", "Load Gravity Law Error",
 							JOptionPane.ERROR_MESSAGE); 
 				}
@@ -239,7 +239,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 				int messageType = JOptionPane.QUESTION_MESSAGE;
 				String[] textoBotones = { "Yes", "No"};
 				int res = JOptionPane.showOptionDialog(
-						ControlPanel.this,
+						null,
 						"Are you sure you want to quit?",
 						"Exit Confirm Dialog", optionType, messageType, null,
 						textoBotones, textoBotones[0]);
@@ -289,7 +289,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 					@Override
 					public void run() {
 						int messageType = JOptionPane.INFORMATION_MESSAGE;
-						JOptionPane.showMessageDialog(ControlPanel.this, 
+						JOptionPane.showMessageDialog(null, 
 								"You have stopped the simulator.", "Simulation stopped", messageType);						
 					}
 				});
@@ -374,7 +374,7 @@ public class ControlPanel extends JPanel implements SimulatorObserver {
 				delayLocal = (Integer) ControlPanel.this.delay.getValue();
 				run_sim(stepsLocal, delayLocal);
 			} catch (Exception e) {
-				JOptionPane.showMessageDialog(ControlPanel.this, 
+				JOptionPane.showMessageDialog(null, 
 						"Something went wrong loading some values (delay/steps/delta-time).",
 						"Error Loading Parameters.", JOptionPane.ERROR_MESSAGE);
 			}
